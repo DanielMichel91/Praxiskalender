@@ -26,22 +26,17 @@
       overflow:hidden;
       text-align:center;
     }
-
-    /* Blaue Leiste – etwas schmaler als zuvor */
+    /* Blaue Leiste */
     header::before,
     header::after{
       content:"";
       position:absolute;
       left:0; top:0; width:100%;
-      height:clamp(140px, 18vw, 200px);  /* ↓ schlanker */
+      height:clamp(140px, 18vw, 200px); /* Desktop/Tabs */
       z-index:0; pointer-events:none; display:block;
     }
-    header::before{
-      background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 100%);
-    }
-    header::after{
-      background:url('hero-wave.svg') bottom/cover no-repeat;
-    }
+    header::before{ background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 100%); }
+    header::after{ background:url('hero-wave.svg') bottom/cover no-repeat; }
 
     .header-content{
       position:relative; z-index:1;
@@ -97,11 +92,11 @@
 
     /* Tablet */
     @media (max-width:900px){
-      header::before, header::after{ height:clamp(150px, 26vw, 210px); }
+      header::before, header::after{ height:clamp(150px, 24vw, 210px); }
     }
-    /* Mobile */
+    /* Mobile – höherer Streifen */
     @media(max-width:650px){
-      header::before, header::after{ height:clamp(160px, 38vw, 220px); }
+      header::before, header::after{ height:clamp(240px, 62vw, 340px); } /* ↑ höher */
       .header-content{ gap:.2rem; }
       .header-text{ text-align:center; }
       .header-text h1{font-size:2rem;}
