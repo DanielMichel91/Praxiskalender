@@ -36,7 +36,7 @@
       z-index:0; pointer-events:none; display:block;
     }
     header::before{ background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 100%); }
-    header::after{ background:url('hero-wave.svg') bottom/cover no-repeat; }
+    header::after{  background:url('hero-wave.svg') bottom/cover no-repeat; }
 
     .header-content{
       position:relative; z-index:1;
@@ -94,14 +94,14 @@
     @media (max-width:900px){
       header::before, header::after{ height:clamp(150px, 24vw, 210px); }
     }
-    /* Mobile – höherer Streifen */
+    /* Mobile – höherer Streifen & Logo näher ans H1 */
     @media(max-width:650px){
-      header::before, header::after{ height:clamp(240px, 62vw, 340px); } /* ↑ höher */
+      header::before, header::after{ height:clamp(280px, 68vw, 380px); } /* etwas höher als zuvor */
       .header-content{ gap:.2rem; }
       .header-text{ text-align:center; }
       .header-text h1{font-size:2rem;}
       .header-text p{font-size:1.05rem;}
-      .header-content img{ transform:translateY(16px); }
+      .header-content img{ transform:translateY(32px); } /* weiter runter = näher an H1 */
       .demo-logo{width:110px;}
       .download-btn{width:100%;}
       .demo-row{ justify-content:center; }
@@ -200,7 +200,7 @@
         <li>App-Speicher/SharedPreferences (Termine, Einstellungen)</li>
         <li>Geräte-Dateisystem (nur wenn Sie aktiv ICS/PDF/CSV exportieren; z. B. in den „Download“-Ordner)</li>
       </ul>
-      <p>Je nach Geräteeinstellung können diese lokalen Daten im Rahmen von Betriebssystem-Backups (z. B. Google-Drive-Backup) gesichert werden. Diese Backups werden vom Geräteanbieter verantwortet.</p>
+      <p>Je nach Geräteeinstellung können diese lokalen Daten im Rahmen von Betriebssystem-Backups gesichert werden. Diese Backups werden vom Geräteanbieter verantwortet.</p>
       <h3>5. Rechtsgrundlage</h3>
       <p>Art. 6 Abs. 1 lit. b DSGVO (Durchführung der Demo-Nutzung/Testbereitstellung) und Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bereitstellung und Verbesserung einer funktionsfähigen Demo).</p>
       <h3>6. Rechte der Nutzer</h3>
