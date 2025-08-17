@@ -198,7 +198,7 @@
       .demo-logo{width:110px;}
       .download-btn{width:100%;}
       .demo-row{ justify-content:center;}
-      /* >>> Blaue Leiste etwas höher */
+      /* Blaue Leiste höher */
       header::before, header::after{ height:300px; }
 
       /* Galerie als Wisch-Karussell */
@@ -206,8 +206,7 @@
         display:grid; grid-auto-flow:column; grid-auto-columns:80%;
         overflow-x:auto; gap:.75rem; padding:.25rem .5rem 0;
         scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
-        /* sorgt dafür, dass der 1. Screenshot perfekt einrasten kann */
-        scroll-padding-left:.5rem;
+        scroll-padding-left:.5rem;   /* passt zum linken Padding */
         scroll-snap-stop:always;
       }
       .screenshot{ scroll-snap-align:start; }
@@ -266,7 +265,6 @@
         <h2>Einblicke in die App</h2>
 
         <div class="screenshot-grid" id="shotGrid">
-          <!-- Thumbnails (6 Stück, Startbildschirm ist 1.) -->
           <div class="screenshot" data-src="desktop-header.jpeg" data-caption="Startbildschirm">
             <img src="desktop-header.jpeg" alt="Startbereich – Desktop" loading="lazy">
             <div class="cap">Startbildschirm</div>
@@ -300,7 +298,7 @@
       </section>
     </div>
 
-    <!-- Pricing direkt unter der Galerie -->
+    <!-- Pricing -->
     <div class="container" data-reveal style="transition-delay:.45s">
       <section class="pricing" id="preise">
         <h2>Preise - Vollversion</h2>
@@ -365,7 +363,7 @@
         <li>Behandlungsart</li>
         <li>Terminbeginn und -ende</li>
         <li>Preis</li>
-        <li>(optional) selbst gewähltes Logo sowie daraus abgeleitete Akzentfarbe für das App-Design</li>
+        <li>(optional) selbst gewähltes Logo sowie daraus abgeleitete Akzentfarbe für das App-Design)</li>
         <li>(optional) exportierte Dateien (ICS/PDF/CSV), die Sie bewusst erzeugen</li>
       </ul>
       <p><em>Hinweis:</em> Es werden keine Kontodaten, keine Firebase-UID und keine Analysedaten erhoben.</p>
@@ -469,7 +467,7 @@
       }
 
       function openAt(i){
-        idx = Math.max(0, Math.min(i, shots.length - 1)); // clamp
+        idx = Math.max(0, Math.min(i, shots.length - 1));
         const item = shots[idx];
         lbImg.src = item.getAttribute('data-src') || item.querySelector('img').src;
         lbCap.textContent = item.getAttribute('data-caption') || item.querySelector('.cap')?.textContent || '';
@@ -494,12 +492,22 @@
         if(e.key==='ArrowLeft') prev();
       });
 
-      /* --- Mobile: sicherstellen, dass die Galerie bei Screenshot 1 startet --- */
+      /* --- Mobile: Galerie sicher auf den Startbildschirm setzen --- */
       const grid = document.getElementById('shotGrid');
-      if (grid && window.matchMedia('(max-width:650px)').matches) {
-        // explizit ganz nach links setzen, damit der erste Screenshot vollständig anliegt
-        grid.scrollLeft = 0;
-      }
+      const ensureFirstVisible = () => {
+        if (!grid) return;
+        if (window.matchMedia('(max-width:650px)').matches) {
+          // ganz nach links, dann erstes Element sauber einrasten lassen
+          grid.scrollLeft = 0;
+          const first = grid.firstElementChild;
+          if (first) first.scrollIntoView({block:'nearest', inline:'start', behavior:'auto'});
+        }
+      };
+      // Mehrfach aufrufen, damit Browser-Auto-Scrolls überstimmt werden
+      ensureFirstVisible();
+      window.addEventListener('load', ensureFirstVisible);
+      setTimeout(ensureFirstVisible, 100);
+      requestAnimationFrame(ensureFirstVisible);
     });
   </script>
 </body>
