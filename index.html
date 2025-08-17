@@ -80,7 +80,7 @@
 
     .screenshot-grid{
       display:grid;
-      grid-template-columns:repeat(3, 1fr); /* 3 pro Reihe (Desktop) */
+      grid-template-columns:repeat(3, 1fr);
       gap:1rem;
       margin-top:1.25rem;
     }
@@ -92,18 +92,11 @@
       border:2px solid var(--brand-weak);
     }
     .screenshot:hover{ transform:translateY(-2px); border-color:var(--brand-weak-hover); }
-
-    /* Thumbnails kleiner */
     .screenshot img{
-      width:100%;
-      height:200px;             /* Thumbnail-Höhe */
-      object-fit:cover;
-      display:block;
-      transition:transform .35s ease;
+      width:100%; height:200px; object-fit:cover; display:block; transition:transform .35s ease;
     }
     .screenshot.wide img{ height:160px; }
     .screenshot:hover img{ transform:scale(1.03); }
-
     .screenshot .cap{
       padding:.6rem .8rem; border-top:1px solid #eef2f7; font-size:.9rem; color:#4b5563; text-align:left;
     }
@@ -149,14 +142,13 @@
     .price-card:hover{ border-color:var(--brand-weak-hover); transform:translateY(-2px); }
     .price-card .price{ font-size:2rem; font-weight:700; color:var(--brand); }
     .price-card .price span{ font-size:1rem; font-weight:600; color:#4b5563; margin-left:.25rem; }
-    .price-card p{ margin-top:.35rem; color:#4b5563; font-size:.95rem; }
     .price-card.highlight{ border-color:var(--brand); }
     .price-card .badge{
       position:absolute; top:-10px; right:-10px; background:var(--brand); color:#fff; font-weight:700; font-size:.85rem;
       padding:.25rem .5rem; border-radius:999px; box-shadow:0 6px 16px rgba(0,0,0,.15);
     }
 
-    /* Modals – sauber aus dem Layout */
+    /* Modals */
     .modal-overlay{
       position:fixed; inset:0; background:rgba(0,0,0,.6);
       display:none; align-items:center; justify-content:center; z-index:1100;
@@ -193,23 +185,28 @@
       .demo-logo{width:110px;}
       .download-btn{width:100%;}
       .demo-row{ justify-content:center;}
-      header::before, header::after{ height:290px; } /* etwas höher */
+      header::before, header::after{ height:300px; } /* noch etwas höher */
 
-      /* Galerie als Wisch-Karussell – erste Kachel ganz links */
+      /* Galerie als Wisch-Karussell – mit sauberem Start links */
       .screenshot-grid{
         display:grid; grid-auto-flow:column; grid-auto-columns:85%;
-        overflow-x:auto; gap:.75rem; padding:.25rem 0 0; /* kein linker Innenabstand */
-        scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scroll-behavior:smooth;
+        overflow-x:auto; gap:.75rem; padding:.25rem 0 0; /* kein linker Padding-Offset */
+        scroll-snap-type:x mandatory;
+        -webkit-overflow-scrolling:touch;
+        scroll-behavior:smooth;
+        overscroll-behavior-x: contain;
+        overflow-anchor: none;           /* verhindert „Anker“-Verschiebungen */
+        scroll-padding-left: 0;
       }
       .screenshot{ scroll-snap-align:start; }
       .screenshot-grid::-webkit-scrollbar{ display:none; }
       .screenshot-grid{ scrollbar-width:none; }
 
+      /* Snap kurz deaktivierbar für Initial-Positionierung */
+      .screenshot-grid.no-snap{ scroll-snap-type: none !important; }
+
       .screenshot img{ height:200px; }
       .screenshot.wide img{ height:160px; }
-
-      .price-grid{ gap:.75rem; }
-      .price-card{ min-width:260px; }
     }
   </style>
 </head>
@@ -257,32 +254,37 @@
         <h2>Einblicke in die App</h2>
 
         <div class="screenshot-grid" id="shotGrid">
-          <!-- Reihenfolge: Startbildschirm zuerst -->
+          <!-- 1) Startbildschirm -->
           <div class="screenshot" data-src="desktop-header.jpeg" data-caption="Startbildschirm">
             <img src="desktop-header.jpeg" alt="Startbildschirm – Desktop" loading="lazy">
             <div class="cap">Startbildschirm</div>
           </div>
 
+          <!-- 2) Monatsansicht -->
           <div class="screenshot" data-src="mobile-month.jpeg" data-caption="Monatsansicht">
             <img src="mobile-month.jpeg" alt="Monatsansicht – Mobile" loading="lazy">
             <div class="cap">Monatsansicht</div>
           </div>
 
+          <!-- 3) Tagesansicht -->
           <div class="screenshot" data-src="mobile-day.jpeg" data-caption="Tagesansicht">
             <img src="mobile-day.jpeg" alt="Tagesansicht – Mobile" loading="lazy">
             <div class="cap">Tagesansicht</div>
           </div>
 
+          <!-- 4) Einnahmen -->
           <div class="screenshot" data-src="mobile-revenue.jpeg" data-caption="Einnahmen – Aktueller Monat &amp; Gesamteinnahmen, Export als PDF/CSV.">
             <img src="mobile-revenue.jpeg" alt="Einnahmen – Mobile" loading="lazy">
             <div class="cap">Einnahmen</div>
           </div>
 
+          <!-- 5) Termin hinzufügen -->
           <div class="screenshot" data-src="mobile-add.jpeg" data-caption="Termin hinzufügen">
             <img src="mobile-add.jpeg" alt="Termin hinzufügen – Mobile" loading="lazy">
             <div class="cap">Termin hinzufügen</div>
           </div>
 
+          <!-- 6) Navigation -->
           <div class="screenshot" data-src="mobile-drawer.jpeg" data-caption="Navigation">
             <img src="mobile-drawer.jpeg" alt="Navigation – Mobile" loading="lazy">
             <div class="cap">Navigation</div>
@@ -415,11 +417,9 @@
 
   <script>
     document.addEventListener('DOMContentLoaded',()=>{
-      /* Immer am Seitenanfang starten (auch bei Reload/BFCACHE) */
+      /* Immer am Seitenanfang starten */
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
       window.scrollTo(0,0);
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
       window.addEventListener('pageshow', (e)=>{ if(e.persisted) window.scrollTo(0,0); });
 
       // Scroll reveal
@@ -489,14 +489,45 @@
         if(e.key==='ArrowLeft') prev();
       });
 
-      /* ---- Galerie auf Mobile wirklich beim ersten Bild starten ---- */
+      /* ---- Mobile-Galerie: garantiert beim ersten Bild starten ---- */
       const grid = document.getElementById('shotGrid');
-      const ensureStart = ()=>{ if(!grid) return; grid.scrollLeft = 0; };
-      // Sofort, nach DOM, und nach kompletter Ladung der Bilder
-      ensureStart();
-      window.addEventListener('load', ensureStart);
-      // Wenn mobile Quer-/Hochformatwechsel stattfindet
-      window.matchMedia('(max-width:650px)').addEventListener?.('change', ensureStart);
+      function snapToFirst(){
+        if(!grid) return;
+        // Snap kurz aus, hart ganz nach links, dann wieder ein
+        grid.classList.add('no-snap');
+        grid.scrollLeft = 1;     // „Nudge“, um manche Browser zu zwingen, zu rechnen
+        grid.scrollLeft = 0;
+        const first = grid.firstElementChild;
+        if(first){ first.scrollIntoView({block:'nearest', inline:'start'}); }
+        // kleine Verzögerung, dann Snap wieder aktivieren
+        requestAnimationFrame(()=> grid.classList.remove('no-snap'));
+      }
+
+      // Bei kleiner Viewportbreite aktiv ausführen
+      const mq = window.matchMedia('(max-width:650px)');
+      const trySnap = ()=>{ if(mq.matches) snapToFirst(); };
+
+      // Direkt nach DOM, nach vollständigem Load, und bei evtl. Format-/Seitenwechsel
+      trySnap();
+      window.addEventListener('load', trySnap);
+      window.addEventListener('resize', trySnap);
+      window.addEventListener('orientationchange', trySnap);
+      window.addEventListener('pageshow', (e)=>{ if(e.persisted) trySnap(); });
+
+      // Warten, bis die Thumbnails geladen sind – dann nochmal sichern
+      if(grid){
+        const imgs = grid.querySelectorAll('img');
+        let remaining = 0;
+        imgs.forEach(img=>{
+          if(!img.complete){
+            remaining++;
+            img.addEventListener('load', ()=>{ remaining--; if(remaining===0) trySnap(); }, {once:true});
+          }
+        });
+        if(remaining===0) trySnap();
+        // Extra-Failsafe
+        setTimeout(trySnap, 300);
+      }
     });
   </script>
 </body>
