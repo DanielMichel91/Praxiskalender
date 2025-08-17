@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Praxiskalender</title>
+
+  <!-- Scroll-Wiederherstellung sehr früh deaktivieren und an den Seitenanfang setzen -->
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+      window.scrollTo(0,0);
+    }
+  </script>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -74,7 +83,7 @@
     }
     .download-btn:hover{background:var(--brand-light); color:#fff;}
 
-    /* Gallery */
+    /* Gallery – Desktop/Tablet: Grid 3/2 Spalten */
     .gallery{ margin-top:2rem; text-align:center; }
     .gallery .subtitle{ margin-top:-.35rem; color:#6b7280; }
 
@@ -175,7 +184,7 @@
       .screenshot.wide img{ height:140px; }
     }
 
-    /* Mobile */
+    /* Mobile – Karussell auf Flex, Start garantiert links, blauer Streifen höher */
     @media(max-width:650px){
       .header-content{ gap:.2rem; }
       .header-text{ text-align:center; }
@@ -185,28 +194,34 @@
       .demo-logo{width:110px;}
       .download-btn{width:100%;}
       .demo-row{ justify-content:center;}
-      header::before, header::after{ height:300px; } /* noch etwas höher */
+      header::before, header::after{ height:320px; }
 
-      /* Galerie als Wisch-Karussell – mit sauberem Start links */
       .screenshot-grid{
-        display:grid; grid-auto-flow:column; grid-auto-columns:85%;
-        overflow-x:auto; gap:.75rem; padding:.25rem 0 0; /* kein linker Padding-Offset */
+        display:flex;            /* FLEX statt Grid für zuverlässigeren Start */
+        gap:.75rem;
+        overflow-x:auto;
+        padding-inline:0;
         scroll-snap-type:x mandatory;
         -webkit-overflow-scrolling:touch;
         scroll-behavior:smooth;
         overscroll-behavior-x: contain;
-        overflow-anchor: none;           /* verhindert „Anker“-Verschiebungen */
-        scroll-padding-left: 0;
+        overflow-anchor: none;
       }
-      .screenshot{ scroll-snap-align:start; }
+      .screenshot{
+        scroll-snap-align:start;
+        flex: 0 0 85%;           /* Kartenbreite */
+      }
       .screenshot-grid::-webkit-scrollbar{ display:none; }
       .screenshot-grid{ scrollbar-width:none; }
 
       /* Snap kurz deaktivierbar für Initial-Positionierung */
-      .screenshot-grid.no-snap{ scroll-snap-type: none !important; }
+      .screenshot-grid.no-snap{ scroll-snap-type:none !important; }
 
       .screenshot img{ height:200px; }
       .screenshot.wide img{ height:160px; }
+
+      .price-grid{ gap:.75rem; }
+      .price-card{ min-width:260px; }
     }
   </style>
 </head>
@@ -259,31 +274,26 @@
             <img src="desktop-header.jpeg" alt="Startbildschirm – Desktop" loading="lazy">
             <div class="cap">Startbildschirm</div>
           </div>
-
           <!-- 2) Monatsansicht -->
           <div class="screenshot" data-src="mobile-month.jpeg" data-caption="Monatsansicht">
             <img src="mobile-month.jpeg" alt="Monatsansicht – Mobile" loading="lazy">
             <div class="cap">Monatsansicht</div>
           </div>
-
           <!-- 3) Tagesansicht -->
           <div class="screenshot" data-src="mobile-day.jpeg" data-caption="Tagesansicht">
             <img src="mobile-day.jpeg" alt="Tagesansicht – Mobile" loading="lazy">
             <div class="cap">Tagesansicht</div>
           </div>
-
           <!-- 4) Einnahmen -->
           <div class="screenshot" data-src="mobile-revenue.jpeg" data-caption="Einnahmen – Aktueller Monat &amp; Gesamteinnahmen, Export als PDF/CSV.">
             <img src="mobile-revenue.jpeg" alt="Einnahmen – Mobile" loading="lazy">
             <div class="cap">Einnahmen</div>
           </div>
-
           <!-- 5) Termin hinzufügen -->
           <div class="screenshot" data-src="mobile-add.jpeg" data-caption="Termin hinzufügen">
             <img src="mobile-add.jpeg" alt="Termin hinzufügen – Mobile" loading="lazy">
             <div class="cap">Termin hinzufügen</div>
           </div>
-
           <!-- 6) Navigation -->
           <div class="screenshot" data-src="mobile-drawer.jpeg" data-caption="Navigation">
             <img src="mobile-drawer.jpeg" alt="Navigation – Mobile" loading="lazy">
@@ -417,8 +427,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded',()=>{
-      /* Immer am Seitenanfang starten */
-      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      /* Nochmals sicherheitshalber ganz nach oben */
       window.scrollTo(0,0);
       window.addEventListener('pageshow', (e)=>{ if(e.persisted) window.scrollTo(0,0); });
 
@@ -489,44 +498,46 @@
         if(e.key==='ArrowLeft') prev();
       });
 
-      /* ---- Mobile-Galerie: garantiert beim ersten Bild starten ---- */
+      /* ---- Mobile-Karussell sicher auf das erste Item setzen ---- */
       const grid = document.getElementById('shotGrid');
-      function snapToFirst(){
+      const mq = window.matchMedia('(max-width:650px)');
+
+      function snapToFirstHard(){
         if(!grid) return;
-        // Snap kurz aus, hart ganz nach links, dann wieder ein
+        if(!mq.matches) { grid.scrollLeft = 0; return; }
         grid.classList.add('no-snap');
-        grid.scrollLeft = 1;     // „Nudge“, um manche Browser zu zwingen, zu rechnen
-        grid.scrollLeft = 0;
+        grid.scrollLeft = 0;                  // hart links
         const first = grid.firstElementChild;
-        if(first){ first.scrollIntoView({block:'nearest', inline:'start'}); }
-        // kleine Verzögerung, dann Snap wieder aktivieren
-        requestAnimationFrame(()=> grid.classList.remove('no-snap'));
+        if(first){ first.scrollIntoView({inline:'start', block:'nearest'}); }
+        // 2× rAF, damit Layout/Snap vollständig anliegt
+        requestAnimationFrame(()=> requestAnimationFrame(()=>{
+          grid.classList.remove('no-snap');
+        }));
       }
 
-      // Bei kleiner Viewportbreite aktiv ausführen
-      const mq = window.matchMedia('(max-width:650px)');
-      const trySnap = ()=>{ if(mq.matches) snapToFirst(); };
+      // Initial + nach Bild-Loads + bei Resize/Orientation + pageshow
+      function initCarouselStart(){
+        if(!grid) return;
+        if(mq.matches) snapToFirstHard();
+      }
 
-      // Direkt nach DOM, nach vollständigem Load, und bei evtl. Format-/Seitenwechsel
-      trySnap();
-      window.addEventListener('load', trySnap);
-      window.addEventListener('resize', trySnap);
-      window.addEventListener('orientationchange', trySnap);
-      window.addEventListener('pageshow', (e)=>{ if(e.persisted) trySnap(); });
+      initCarouselStart();
+      window.addEventListener('load', initCarouselStart);
+      window.addEventListener('resize', initCarouselStart);
+      window.addEventListener('orientationchange', initCarouselStart);
+      window.addEventListener('pageshow', (e)=>{ if(e.persisted) initCarouselStart(); });
 
-      // Warten, bis die Thumbnails geladen sind – dann nochmal sichern
       if(grid){
         const imgs = grid.querySelectorAll('img');
-        let remaining = 0;
+        let pending = 0;
         imgs.forEach(img=>{
           if(!img.complete){
-            remaining++;
-            img.addEventListener('load', ()=>{ remaining--; if(remaining===0) trySnap(); }, {once:true});
+            pending++;
+            img.addEventListener('load', ()=>{ pending--; if(pending===0) initCarouselStart(); }, {once:true});
           }
         });
-        if(remaining===0) trySnap();
-        // Extra-Failsafe
-        setTimeout(trySnap, 300);
+        if(pending===0) initCarouselStart();
+        setTimeout(initCarouselStart, 300);  // Failsafe
       }
     });
   </script>
