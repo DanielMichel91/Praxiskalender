@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Praxiskalender</title>
 
-  <!-- Scroll-Wiederherstellung sehr früh deaktivieren und ganz nach oben -->
+  <!-- Immer ganz oben starten -->
   <script>
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
@@ -22,11 +22,9 @@
       --brand-weak-hover: rgba(0,119,204,.4);
     }
     *{margin:0;padding:0;box-sizing:border-box;}
-    /* FIX: Scroll-Anchoring global aus, damit kein Sprung nach unten passiert */
     html{scroll-behavior:smooth; overflow-anchor:none;}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
 
-    /* Scroll reveal */
     [data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
     [data-reveal].is-visible{opacity:1;transform:none;}
 
@@ -40,7 +38,7 @@
     header::before, header::after{
       content:"";
       position:absolute; left:0; top:0; width:100%;
-      height:150px; /* Desktop */
+      height:150px;
       pointer-events:none; z-index:0;
     }
     header::before{ background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 100%); }
@@ -84,7 +82,7 @@
     }
     .download-btn:hover{background:var(--brand-light); color:#fff;}
 
-    /* Gallery – Desktop/Tablet: Grid */
+    /* Gallery */
     .gallery{ margin-top:2rem; text-align:center; }
     .gallery .subtitle{ margin-top:-.35rem; color:#6b7280; }
 
@@ -136,8 +134,7 @@
     }
     .lightbox .lb-prev{ left:14px; }
     .lightbox .lb-next{ right:14px; }
-    .lightbox .lb-prev[disabled],
-    .lightbox .lb-next[disabled]{ opacity:.35; cursor:default; pointer-events:none; }
+    .lightbox .lb-prev[disabled], .lightbox .lb-next[disabled]{ opacity:.35; cursor:default; pointer-events:none; }
 
     /* Pricing */
     .pricing{ text-align:center; }
@@ -157,6 +154,36 @@
       position:absolute; top:-10px; right:-10px; background:var(--brand); color:#fff; font-weight:700; font-size:.85rem;
       padding:.25rem .5rem; border-radius:999px; box-shadow:0 6px 16px rgba(0,0,0,.15);
     }
+
+    /* Formular */
+    .form{ text-align:left; }
+    .form .form-grid{ display:grid; gap:1rem; grid-template-columns:1fr 1fr; }
+    .form .field{ display:flex; flex-direction:column; }
+    .form label{ font-weight:600; margin-bottom:.35rem; }
+    .form input[type="text"],
+    .form input[type="email"]{
+      padding:.7rem .8rem; border-radius:10px; border:2px solid var(--brand-weak);
+      outline:none; font:inherit; transition:border-color .2s ease, box-shadow .2s ease; background:#fff;
+    }
+    .form input:focus{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(0,119,204,.15); }
+    .radio-group{
+      display:flex; gap:1rem; align-items:center; flex-wrap:wrap;
+      border:2px solid var(--brand-weak); border-radius:10px; padding:.6rem .8rem; background:#fff;
+    }
+    .form .actions{ margin-top:1rem; display:flex; gap:.75rem; align-items:center; justify-content:flex-end; }
+    .primary-btn{
+      display:inline-block; border:none; cursor:pointer; font-weight:700;
+      padding:.9rem 1.4rem; border-radius:50px; background:var(--brand); color:#fff;
+      transition:opacity .2s ease, transform .2s ease;
+    }
+    .primary-btn:hover{ opacity:.95; transform:translateY(-1px); }
+    .ghost-btn{
+      background:#fff; color:var(--brand); border:2px solid var(--brand); padding:.75rem 1.2rem; border-radius:50px; cursor:pointer; font-weight:700;
+    }
+    .form .hint{ color:#6b7280; font-size:.9rem; margin-top:.5rem; }
+    .alert{ margin-top:.75rem; font-size:.95rem; }
+    .alert.success{ color:#0a7a3d; }
+    .alert.error{ color:#b91c1c; }
 
     /* Modals */
     .modal-overlay{
@@ -183,9 +210,10 @@
       .screenshot-grid{ grid-template-columns:repeat(2, 1fr); }
       .screenshot img{ height:180px; }
       .screenshot.wide img{ height:140px; }
+      .form .form-grid{ grid-template-columns:1fr; }
     }
 
-    /* Mobile – Karussell auf Flex, blauer Streifen höher */
+    /* Mobile */
     @media(max-width:650px){
       .header-content{ gap:.2rem; }
       .header-text{ text-align:center; }
@@ -208,14 +236,9 @@
         overscroll-behavior-x: contain;
         overflow-anchor: none;
       }
-      .screenshot{
-        scroll-snap-align:start;
-        flex: 0 0 85%;
-      }
+      .screenshot{ scroll-snap-align:start; flex: 0 0 85%; }
       .screenshot-grid::-webkit-scrollbar{ display:none; }
       .screenshot-grid{ scrollbar-width:none; }
-
-      /* Snap temporär deaktivierbar für Initial-Positionierung */
       .screenshot-grid.no-snap{ scroll-snap-type:none !important; }
 
       .screenshot img{ height:200px; }
@@ -223,6 +246,8 @@
 
       .price-grid{ gap:.75rem; }
       .price-card{ min-width:260px; }
+
+      .form .actions{ justify-content:stretch; }
     }
   </style>
 </head>
@@ -311,11 +336,15 @@
             <div class="price">ab 100&nbsp;€<span>/Jahr</span></div>
           </div>
         </div>
+
+        <div style="margin-top:1.25rem;">
+          <button class="download-btn" data-open="anfrageModal" type="button">Vollversion anfragen</button>
+        </div>
       </section>
     </div>
   </main>
 
-  <!-- Modals und Footer (unverändert) -->
+  <!-- Impressum Modal -->
   <div id="impressumModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="impressumTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="impressumModal" aria-label="Schließen">&times;</button>
@@ -327,6 +356,7 @@
     </div>
   </div>
 
+  <!-- Datenschutz (Vollversion) Modal -->
   <div id="datenschutzModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="datenschutzModal" aria-label="Schließen">&times;</button>
@@ -343,6 +373,7 @@
     </div>
   </div>
 
+  <!-- Datenschutz (Demo) Modal -->
   <div id="datenschutzDemoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzDemoTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="datenschutzDemoModal" aria-label="Schließen">&times;</button>
@@ -393,6 +424,49 @@
     </div>
   </div>
 
+  <!-- Anfrage-Modal -->
+  <div id="anfrageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="anfrageTitle" aria-hidden="true">
+    <div class="modal">
+      <button class="modal-close" data-close="anfrageModal" aria-label="Schließen">&times;</button>
+      <h2 id="anfrageTitle">Vollversion anfragen</h2>
+      <form id="anfrageForm" class="form" novalidate>
+        <!-- Honeypot (Bots füllen das aus) -->
+        <input type="text" name="company" autocomplete="organization" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+
+        <div class="field">
+          <label for="anrede">Anrede</label>
+          <div class="radio-group" id="anrede" role="radiogroup" aria-label="Anrede">
+            <label><input type="radio" name="anrede" value="Herr" required> Herr</label>
+            <label><input type="radio" name="anrede" value="Frau" required> Frau</label>
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-top:1rem;">
+          <div class="field">
+            <label for="vorname">Vorname</label>
+            <input id="vorname" name="vorname" type="text" autocomplete="given-name" required placeholder="Max" maxlength="60">
+          </div>
+          <div class="field">
+            <label for="nachname">Nachname</label>
+            <input id="nachname" name="nachname" type="text" autocomplete="family-name" required placeholder="Mustermann" maxlength="60">
+          </div>
+          <div class="field" style="grid-column:1/-1;">
+            <label for="email">E-Mail</label>
+            <input id="email" name="email" type="email" autocomplete="email" required placeholder="name@beispiel.de" maxlength="120">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="ghost-btn" data-close="anfrageModal">Abbrechen</button>
+          <button id="submitBtn" type="submit" class="primary-btn">Anfrage absenden</button>
+        </div>
+
+        <div id="formAlert" class="alert" role="status" aria-live="polite" style="display:none;"></div>
+        <p class="hint">Ihre Anfrage wird serverseitig versendet – Sie müssen kein E-Mail-Programm öffnen.</p>
+      </form>
+    </div>
+  </div>
+
   <footer>
     &copy; 2025 Praxiskalender&nbsp;|&nbsp;
     <a href="#" data-open="impressumModal">Impressum</a>&nbsp;|&nbsp;
@@ -421,7 +495,7 @@
       },{threshold:.2});
       revealEls.forEach(el=>observer.observe(el));
 
-      // Modals
+      // Modal Handling
       const openLinks=document.querySelectorAll('[data-open]');
       const closeEls=document.querySelectorAll('[data-close]');
       openLinks.forEach(link=>{
@@ -477,31 +551,27 @@
         if(e.key==='ArrowLeft') prev();
       });
 
-      /* Mobile-Karussell garantiert beim ersten Item starten – ohne scrollIntoView */
+      // Mobile-Karussell beim ersten Item starten
       const grid = document.getElementById('shotGrid');
       const mq = window.matchMedia('(max-width:650px)');
-
       function snapToFirstHard(){
         if(!grid) return;
         if(!mq.matches){ grid.scrollLeft = 0; return; }
         grid.classList.add('no-snap');
-        grid.scrollLeft = 0;                 // nur horizontal, keine Seitenbewegung
+        grid.scrollLeft = 0;
         requestAnimationFrame(()=> requestAnimationFrame(()=>{
           grid.classList.remove('no-snap');
         }));
       }
-
       function initCarouselStart(){
         if(!grid) return;
         if(mq.matches) snapToFirstHard();
       }
-
       initCarouselStart();
       window.addEventListener('load', initCarouselStart);
       window.addEventListener('resize', initCarouselStart);
       window.addEventListener('orientationchange', initCarouselStart);
       window.addEventListener('pageshow', (e)=>{ if(e.persisted) initCarouselStart(); });
-
       if(grid){
         const imgs = grid.querySelectorAll('img');
         let pending = 0;
@@ -514,6 +584,73 @@
         if(pending===0) initCarouselStart();
         setTimeout(initCarouselStart, 300);
       }
+
+      /* -------- Formular: serverseitig senden -------- */
+      const anfrageModal = document.getElementById('anfrageModal');
+      const form = document.getElementById('anfrageForm');
+      const alertEl = document.getElementById('formAlert');
+      const submitBtn = document.getElementById('submitBtn');
+
+      function showAlert(msg, type){
+        alertEl.textContent = msg;
+        alertEl.className = 'alert ' + (type || '');
+        alertEl.style.display = 'block';
+      }
+      function clearAlert(){
+        alertEl.textContent = '';
+        alertEl.className = 'alert';
+        alertEl.style.display = 'none';
+      }
+
+      form?.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        clearAlert();
+
+        const data = {
+          anrede: form.anrede?.value || '',
+          vorname: form.vorname?.value?.trim() || '',
+          nachname: form.nachname?.value?.trim() || '',
+          email: form.email?.value?.trim() || '',
+          company: form.company?.value?.trim() || '' // honeypot
+        };
+
+        // einfache Client-Validierung
+        if(!data.anrede || !data.vorname || !data.nachname || !data.email){
+          form.reportValidity && form.reportValidity();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Senden...';
+
+        try{
+          // Falls Backend auf anderer Domain läuft: komplette URL hier eintragen
+          const res = await fetch('/api/send-request', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data),
+          });
+
+          const json = await res.json().catch(()=> ({}));
+          if(!res.ok){
+            throw new Error(json?.error || 'Senden fehlgeschlagen.');
+          }
+
+          showAlert('Danke! Ihre Anfrage wurde erfolgreich versendet.', 'success');
+          form.reset();
+          // Modal nach kurzer Zeit schließen
+          setTimeout(()=>{
+            anfrageModal?.classList.remove('active');
+            anfrageModal?.setAttribute('aria-hidden','true');
+            clearAlert();
+          }, 1200);
+        }catch(err){
+          showAlert(err.message || 'Es ist ein Fehler aufgetreten.', 'error');
+        }finally{
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Anfrage absenden';
+        }
+      });
     });
   </script>
 </body>
