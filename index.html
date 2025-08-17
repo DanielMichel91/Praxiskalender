@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Praxiskalender</title>
 
-  <!-- Scroll-Wiederherstellung sehr früh deaktivieren und an den Seitenanfang setzen -->
+  <!-- Scroll-Wiederherstellung sehr früh deaktivieren und ganz nach oben -->
   <script>
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
@@ -22,7 +22,8 @@
       --brand-weak-hover: rgba(0,119,204,.4);
     }
     *{margin:0;padding:0;box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
+    /* FIX: Scroll-Anchoring global aus, damit kein Sprung nach unten passiert */
+    html{scroll-behavior:smooth; overflow-anchor:none;}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
 
     /* Scroll reveal */
@@ -83,7 +84,7 @@
     }
     .download-btn:hover{background:var(--brand-light); color:#fff;}
 
-    /* Gallery – Desktop/Tablet: Grid 3/2 Spalten */
+    /* Gallery – Desktop/Tablet: Grid */
     .gallery{ margin-top:2rem; text-align:center; }
     .gallery .subtitle{ margin-top:-.35rem; color:#6b7280; }
 
@@ -184,7 +185,7 @@
       .screenshot.wide img{ height:140px; }
     }
 
-    /* Mobile – Karussell auf Flex, Start garantiert links, blauer Streifen höher */
+    /* Mobile – Karussell auf Flex, blauer Streifen höher */
     @media(max-width:650px){
       .header-content{ gap:.2rem; }
       .header-text{ text-align:center; }
@@ -197,7 +198,7 @@
       header::before, header::after{ height:320px; }
 
       .screenshot-grid{
-        display:flex;            /* FLEX statt Grid für zuverlässigeren Start */
+        display:flex;
         gap:.75rem;
         overflow-x:auto;
         padding-inline:0;
@@ -209,12 +210,12 @@
       }
       .screenshot{
         scroll-snap-align:start;
-        flex: 0 0 85%;           /* Kartenbreite */
+        flex: 0 0 85%;
       }
       .screenshot-grid::-webkit-scrollbar{ display:none; }
       .screenshot-grid{ scrollbar-width:none; }
 
-      /* Snap kurz deaktivierbar für Initial-Positionierung */
+      /* Snap temporär deaktivierbar für Initial-Positionierung */
       .screenshot-grid.no-snap{ scroll-snap-type:none !important; }
 
       .screenshot img{ height:200px; }
@@ -269,32 +270,26 @@
         <h2>Einblicke in die App</h2>
 
         <div class="screenshot-grid" id="shotGrid">
-          <!-- 1) Startbildschirm -->
           <div class="screenshot" data-src="desktop-header.jpeg" data-caption="Startbildschirm">
             <img src="desktop-header.jpeg" alt="Startbildschirm – Desktop" loading="lazy">
             <div class="cap">Startbildschirm</div>
           </div>
-          <!-- 2) Monatsansicht -->
           <div class="screenshot" data-src="mobile-month.jpeg" data-caption="Monatsansicht">
             <img src="mobile-month.jpeg" alt="Monatsansicht – Mobile" loading="lazy">
             <div class="cap">Monatsansicht</div>
           </div>
-          <!-- 3) Tagesansicht -->
           <div class="screenshot" data-src="mobile-day.jpeg" data-caption="Tagesansicht">
             <img src="mobile-day.jpeg" alt="Tagesansicht – Mobile" loading="lazy">
             <div class="cap">Tagesansicht</div>
           </div>
-          <!-- 4) Einnahmen -->
           <div class="screenshot" data-src="mobile-revenue.jpeg" data-caption="Einnahmen – Aktueller Monat &amp; Gesamteinnahmen, Export als PDF/CSV.">
             <img src="mobile-revenue.jpeg" alt="Einnahmen – Mobile" loading="lazy">
             <div class="cap">Einnahmen</div>
           </div>
-          <!-- 5) Termin hinzufügen -->
           <div class="screenshot" data-src="mobile-add.jpeg" data-caption="Termin hinzufügen">
             <img src="mobile-add.jpeg" alt="Termin hinzufügen – Mobile" loading="lazy">
             <div class="cap">Termin hinzufügen</div>
           </div>
-          <!-- 6) Navigation -->
           <div class="screenshot" data-src="mobile-drawer.jpeg" data-caption="Navigation">
             <img src="mobile-drawer.jpeg" alt="Navigation – Mobile" loading="lazy">
             <div class="cap">Navigation</div>
@@ -320,7 +315,7 @@
     </div>
   </main>
 
-  <!-- Impressum Modal -->
+  <!-- Modals und Footer (unverändert) -->
   <div id="impressumModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="impressumTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="impressumModal" aria-label="Schließen">&times;</button>
@@ -332,7 +327,6 @@
     </div>
   </div>
 
-  <!-- Datenschutz (Vollversion) Modal -->
   <div id="datenschutzModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="datenschutzModal" aria-label="Schließen">&times;</button>
@@ -349,18 +343,14 @@
     </div>
   </div>
 
-  <!-- Datenschutz (Demo) Modal -->
   <div id="datenschutzDemoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzDemoTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="datenschutzDemoModal" aria-label="Schließen">&times;</button>
       <h2 id="datenschutzDemoTitle">Datenschutzerklärung (Demo-App)</h2>
-
       <h3>1. Allgemeines</h3>
       <p>Diese Demo-App verarbeitet personenbezogene Daten ausschließlich zur Demonstration der Kalenderfunktionen. Die App richtet sich ausschließlich an gewerbliche Nutzer gemäß § 14 BGB. Es findet keine Übermittlung an Server statt; die Verarbeitung erfolgt lokal auf Ihrem Endgerät.</p>
-
       <h3>2. Zweck der Datenverarbeitung</h3>
       <p>Die Datenverarbeitung erfolgt zur testweisen Verwaltung von Terminen, Kundeninformationen und Einnahmen innerhalb der App (Demozwecke).</p>
-
       <h3>3. Verarbeitete Daten</h3>
       <ul>
         <li>Kundenname</li>
@@ -372,7 +362,6 @@
         <li>(optional) exportierte Dateien (ICS/PDF/CSV), die Sie bewusst erzeugen</li>
       </ul>
       <p><em>Hinweis:</em> Es werden keine Kontodaten, keine Firebase-UID und keine Analysedaten erhoben.</p>
-
       <h3>4. Speicherung und Hosting</h3>
       <p>Die Daten werden ausschließlich lokal auf Ihrem Gerät gespeichert:</p>
       <ul>
@@ -380,13 +369,10 @@
         <li>Geräte-Dateisystem (nur wenn Sie aktiv ICS/PDF/CSV exportieren; z. B. in den „Download“-Ordner)</li>
       </ul>
       <p>Je nach Geräteeinstellung können diese lokalen Daten im Rahmen von Betriebssystem-Backups (z. B. Google-Drive-Backup) gesichert werden. Diese Backups werden vom Geräteanbieter verantwortet.</p>
-
       <h3>5. Rechtsgrundlage</h3>
       <p>Art. 6 Abs. 1 lit. b DSGVO (Durchführung der Demo-Nutzung/Testbereitstellung) und Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bereitstellung und Verbesserung einer funktionsfähigen Demo).</p>
-
       <h3>6. Rechte der Nutzer</h3>
       <p>Da die Daten ausschließlich lokal verarbeitet werden, können viele Rechte direkt durch Zurücksetzen oder Deinstallation der App ausgeübt werden (siehe Punkt 8).</p>
-
       <h3>7. Datensicherheit</h3>
       <p>Die App nutzt die Sicherheitsmechanismen des Betriebssystems (App-Sandbox, Geräte-Verschlüsselung). Es werden keine Daten an Dritte übertragen, sofern Sie nicht aktiv Dateien teilen.</p>
       <p><strong>Berechtigungen:</strong></p>
@@ -395,7 +381,6 @@
         <li>Speicher/Dateizugriff (Export von ICS/PDF/CSV)</li>
       </ul>
       <p>Diese Berechtigungen werden nur für die beschriebenen Zwecke verwendet.</p>
-
       <h3>8. Löschung der Daten</h3>
       <ul>
         <li><strong>In-App:</strong> Über „App zurücksetzen“ werden alle lokal gespeicherten App-Daten gelöscht.</li>
@@ -403,7 +388,6 @@
         <li><strong>Deinstallation:</strong> Durch Deinstallation werden alle App-Daten auf dem Gerät entfernt (Exportdateien bleiben erhalten, bis Sie sie manuell löschen).</li>
         <li><strong>Backups:</strong> Daten in Geräte-Backups unterliegen den Einstellungen Ihres Geräts/Anbieters.</li>
       </ul>
-
       <h3>9. Änderungen</h3>
       <p>Diese Datenschutzerklärung kann bei Bedarf angepasst werden.</p>
     </div>
@@ -416,7 +400,7 @@
     <a href="#" data-open="datenschutzDemoModal">Datenschutz (Demo)</a>
   </footer>
 
-  <!-- Lightbox Overlay mit Navigation -->
+  <!-- Lightbox -->
   <div id="lightbox" class="lightbox" aria-modal="true" role="dialog">
     <button class="lb-close" aria-label="Schließen">&times;</button>
     <button class="lb-prev" aria-label="Vorheriges Bild">‹</button>
@@ -427,18 +411,17 @@
 
   <script>
     document.addEventListener('DOMContentLoaded',()=>{
-      /* Nochmals sicherheitshalber ganz nach oben */
       window.scrollTo(0,0);
       window.addEventListener('pageshow', (e)=>{ if(e.persisted) window.scrollTo(0,0); });
 
-      // Scroll reveal
+      // Reveal
       const revealEls=document.querySelectorAll('[data-reveal]');
       const observer=new IntersectionObserver((entries,obs)=>{
         entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-visible'); obs.unobserve(e.target); }});
       },{threshold:.2});
       revealEls.forEach(el=>observer.observe(el));
 
-      // Modal open/close
+      // Modals
       const openLinks=document.querySelectorAll('[data-open]');
       const closeEls=document.querySelectorAll('[data-close]');
       openLinks.forEach(link=>{
@@ -460,7 +443,7 @@
         overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); }});
       });
 
-      /* ---- Lightbox mit Navigation (ohne Loop) ---- */
+      // Lightbox
       const shots = Array.from(document.querySelectorAll('#shotGrid .screenshot'));
       const lb = document.getElementById('lightbox');
       const lbImg = lb.querySelector('img');
@@ -470,17 +453,13 @@
       const btnClose = lb.querySelector('.lb-close');
       let idx = 0;
 
-      function updateArrows(){
-        btnPrev.disabled = (idx === 0);
-        btnNext.disabled = (idx === shots.length - 1);
-      }
+      function updateArrows(){ btnPrev.disabled = (idx === 0); btnNext.disabled = (idx === shots.length - 1); }
       function openAt(i){
         idx = Math.max(0, Math.min(i, shots.length - 1));
         const item = shots[idx];
         lbImg.src = item.getAttribute('data-src') || item.querySelector('img').src;
         lbCap.textContent = item.getAttribute('data-caption') || item.querySelector('.cap')?.textContent || '';
-        lb.classList.add('open');
-        updateArrows();
+        lb.classList.add('open'); updateArrows();
       }
       function next(){ if (idx < shots.length - 1) openAt(idx + 1); }
       function prev(){ if (idx > 0) openAt(idx - 1); }
@@ -498,24 +477,20 @@
         if(e.key==='ArrowLeft') prev();
       });
 
-      /* ---- Mobile-Karussell sicher auf das erste Item setzen ---- */
+      /* Mobile-Karussell garantiert beim ersten Item starten – ohne scrollIntoView */
       const grid = document.getElementById('shotGrid');
       const mq = window.matchMedia('(max-width:650px)');
 
       function snapToFirstHard(){
         if(!grid) return;
-        if(!mq.matches) { grid.scrollLeft = 0; return; }
+        if(!mq.matches){ grid.scrollLeft = 0; return; }
         grid.classList.add('no-snap');
-        grid.scrollLeft = 0;                  // hart links
-        const first = grid.firstElementChild;
-        if(first){ first.scrollIntoView({inline:'start', block:'nearest'}); }
-        // 2× rAF, damit Layout/Snap vollständig anliegt
+        grid.scrollLeft = 0;                 // nur horizontal, keine Seitenbewegung
         requestAnimationFrame(()=> requestAnimationFrame(()=>{
           grid.classList.remove('no-snap');
         }));
       }
 
-      // Initial + nach Bild-Loads + bei Resize/Orientation + pageshow
       function initCarouselStart(){
         if(!grid) return;
         if(mq.matches) snapToFirstHard();
@@ -537,7 +512,7 @@
           }
         });
         if(pending===0) initCarouselStart();
-        setTimeout(initCarouselStart, 300);  // Failsafe
+        setTimeout(initCarouselStart, 300);
       }
     });
   </script>
