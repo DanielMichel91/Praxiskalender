@@ -9,7 +9,6 @@
     :root{
       --brand:#0077cc; --brand-light:#2196f3; --bg:#f4f7fa; --card-bg:#fff; --text:#333; --radius:12px;
       --logo-size:140px;
-      /* zarter Rahmen-Ton aus der Markenfarbe abgeleitet */
       --brand-weak: rgba(0,119,204,.22);
       --brand-weak-hover: rgba(0,119,204,.4);
     }
@@ -90,7 +89,7 @@
       background:#fff; box-shadow:0 8px 30px rgba(0,0,0,.06);
       cursor:zoom-in; transition:transform .25s ease, border-color .25s ease;
       display:flex; flex-direction:column;
-      border:2px solid var(--brand-weak); /* zarter blauer Rahmen */
+      border:2px solid var(--brand-weak);
     }
     .screenshot:hover{ transform:translateY(-2px); border-color:var(--brand-weak-hover); }
 
@@ -101,7 +100,7 @@
       object-fit:cover;
       display:block;
       transition:transform .35s ease;
-      aspect-ratio:auto;        /* überschreibt evtl. frühere Vorgaben */
+      aspect-ratio:auto;
     }
     .screenshot.wide img{ height:160px; }
     .screenshot:hover img{ transform:scale(1.03); }
@@ -161,9 +160,7 @@
       font-size:1rem; font-weight:600; color:#4b5563; margin-left:.25rem;
     }
     .price-card p{ margin-top:.35rem; color:#4b5563; font-size:.95rem; }
-    .price-card.highlight{
-      border-color:var(--brand);
-    }
+    .price-card.highlight{ border-color:var(--brand); }
     .price-card .badge{
       position:absolute; top:-10px; right:-10px;
       background:var(--brand); color:#fff; font-weight:700; font-size:.85rem;
@@ -186,7 +183,7 @@
     /* Tablet */
     @media (max-width:900px){
       header::before, header::after{ height:170px; }
-      .screenshot-grid{ grid-template-columns:repeat(2, 1fr); } /* 2 pro Reihe */
+      .screenshot-grid{ grid-template-columns:repeat(2, 1fr); }
       .screenshot img{ height:180px; }
       .screenshot.wide img{ height:140px; }
     }
@@ -201,13 +198,17 @@
       .demo-logo{width:110px;}
       .download-btn{width:100%;}
       .demo-row{ justify-content:center;}
-      header::before, header::after{ height:265px; }
+      /* >>> Blaue Leiste etwas höher */
+      header::before, header::after{ height:300px; }
 
       /* Galerie als Wisch-Karussell */
       .screenshot-grid{
         display:grid; grid-auto-flow:column; grid-auto-columns:80%;
         overflow-x:auto; gap:.75rem; padding:.25rem .5rem 0;
         scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+        /* sorgt dafür, dass der 1. Screenshot perfekt einrasten kann */
+        scroll-padding-left:.5rem;
+        scroll-snap-stop:always;
       }
       .screenshot{ scroll-snap-align:start; }
       .screenshot-grid::-webkit-scrollbar{ display:none; }
@@ -265,7 +266,7 @@
         <h2>Einblicke in die App</h2>
 
         <div class="screenshot-grid" id="shotGrid">
-          <!-- Thumbnails (6 Stück, 3 pro Reihe auf Desktop) -->
+          <!-- Thumbnails (6 Stück, Startbildschirm ist 1.) -->
           <div class="screenshot" data-src="desktop-header.jpeg" data-caption="Startbildschirm">
             <img src="desktop-header.jpeg" alt="Startbereich – Desktop" loading="lazy">
             <div class="cap">Startbildschirm</div>
@@ -328,7 +329,7 @@
     </div>
   </div>
 
-  <!-- Datenschutz (Pro) Modal -->
+  <!-- Datenschutz (Vollversion) Modal -->
   <div id="datenschutzModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzTitle">
     <div class="modal">
       <button class="modal-close" data-close="datenschutzModal" aria-label="Schließen">&times;</button>
@@ -492,6 +493,13 @@
         if(e.key==='ArrowRight') next();
         if(e.key==='ArrowLeft') prev();
       });
+
+      /* --- Mobile: sicherstellen, dass die Galerie bei Screenshot 1 startet --- */
+      const grid = document.getElementById('shotGrid');
+      if (grid && window.matchMedia('(max-width:650px)').matches) {
+        // explizit ganz nach links setzen, damit der erste Screenshot vollständig anliegt
+        grid.scrollLeft = 0;
+      }
     });
   </script>
 </body>
