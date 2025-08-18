@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Praxiskalender</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#0077cc; --brand-light:#2196f3; --bg:#f4f7fa; --card-bg:#fff; --text:#333; --radius:12px;
+      --logo-size:140px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+    [data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+    [data-reveal].is-visible{opacity:1;transform:none;}
+
+    /* Header */
+    header{
+      background:none;
+      padding:0 1rem .75rem;
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+      text-align:center;
+    }
+    /* Blaue Leiste */
+    header::before,
+    header::after{
+      content:"";
+      position:absolute;
+      left:0; top:0; width:100%;
+      height:clamp(140px, 18vw, 200px); /* Desktop/Tabs */
+      z-index:0; pointer-events:none; display:block;
+    }
+    header::before{ background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 100%); }
+    header::after{  background:url('hero-wave.svg') bottom/cover no-repeat; }
+
+    .header-content{
+      position:relative; z-index:1;
+      display:flex; align-items:center; justify-content:center;
+      gap:1rem; flex-wrap:wrap;
+      max-width:1100px; margin:0 auto;
+    }
+    .header-content img{width:200px; height:auto; transform:translateY(-6px);}
+    .header-text{ text-align:left; }
+    .header-text h1{font-size:2.4rem; font-weight:700; line-height:1.2; margin-bottom:.35rem;}
+    .header-text p{font-size:1.2rem; opacity:.95;}
+
+    main{margin-top:0;}
+    .container{
+      max-width:1100px; margin:0 auto 3rem; padding:2rem 1rem;
+      background:var(--card-bg); border-radius:var(--radius); box-shadow:0 8px 30px rgba(0,0,0,.06);
+      text-align:center;
+    }
+    section{margin-bottom:2.5rem;}
+    h2{color:var(--brand); font-size:1.75rem; margin-bottom:1.1rem; font-weight:600;}
+
+    .features{display:flex; justify-content:center;}
+    .features ul{list-style:none; margin:0; padding:0; display:inline-block; text-align:left;}
+    .features li{position:relative; padding-left:1.5rem; margin:.5rem 0;}
+    .features li::before{content:"✔"; position:absolute; left:0; top:0; color:var(--brand); font-weight:700; line-height:1;}
+
+    .cta{text-align:center;}
+    .cta-copy p{margin:0;}
+    .demo-row{
+      margin-top:1rem;
+      display:inline-flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center;
+    }
+    .demo-logo{width:var(--logo-size); height:auto;}
+    .download-btn{
+      display:inline-block; text-decoration:none; font-weight:600; font-size:1.125rem;
+      padding:.9rem 2rem; border-radius:50px; transition:background .25s ease;
+      background:#fff; color:var(--brand); border:2px solid var(--brand);
+      white-space:nowrap;
+    }
+    .download-btn:hover{background:var(--brand-light); color:#fff;}
+
+    .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; visibility:hidden; opacity:0; transition:opacity .3s ease; z-index:100;}
+    .modal-overlay.active{visibility:visible; opacity:1;}
+    .modal{background:#fff; width:min(90%,700px); max-height:80vh; overflow:auto; border-radius:var(--radius); padding:2rem; position:relative; box-shadow:0 8px 24px rgba(0,0,0,.18);}
+    .modal h2{margin-bottom:1rem; color:var(--brand);}
+    .modal h3{margin:.75rem 0 .35rem; color:#0d6efd; font-size:1.05rem;}
+    .modal-close{position:absolute; top:.75rem; right:.75rem; background:none; border:none; font-size:1.75rem; cursor:pointer; color:var(--brand);}
+    .modal p{margin-bottom:1rem; font-size:.95rem; white-space:pre-line;}
+    .modal ul{margin:.25rem 0 1rem 1.25rem;}
+
+    footer{text-align:center; padding:2rem 1rem; font-size:.9rem; color:#888;}
+    footer a{color:var(--brand); text-decoration:none; margin:0 .25rem; font-weight:600;}
+
+    /* Tablet */
+    @media (max-width:900px){
+      header::before, header::after{ height:clamp(150px, 24vw, 210px); }
+    }
+    /* Mobile – höherer Streifen & Logo näher ans H1 */
+    @media(max-width:650px){
+      header::before, header::after{ height:clamp(280px, 68vw, 380px); } /* etwas höher als zuvor */
+      .header-content{ gap:.2rem; }
+      .header-text{ text-align:center; }
+      .header-text h1{font-size:2rem;}
+      .header-text p{font-size:1.05rem;}
+      .header-content img{ transform:translateY(32px); } /* weiter runter = näher an H1 */
+      .demo-logo{width:110px;}
+      .download-btn{width:100%;}
+      .demo-row{ justify-content:center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content" data-reveal>
+      <img src="Logo white.png" alt="Kalender-App Logo">
+      <div class="header-text">
+        <h1>Individuell &amp; effizient</h1>
+        <p>Optimieren Sie Ihre Terminplanung</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" data-reveal style="transition-delay:.15s">
+      <section>
+        <h2>Was diese Kalender-App besonders macht</h2>
+        <div class="features">
+          <ul>
+            <li data-reveal style="transition-delay:.2s">Individuelle Anpassung an Ihre Praxisbedürfnisse</li>
+            <li data-reveal style="transition-delay:.3s">Einzeltermine teilen – einfach per Mail oder WhatsApp</li>
+            <li data-reveal style="transition-delay:.4s">Automatische Zeit- und Preisberechnung je nach Behandlung</li>
+            <li data-reveal style="transition-delay:.5s">Einnahmenübersicht als PDF-Download</li>
+            <li data-reveal style="transition-delay:.6s">Termine exportieren &amp; in andere Kalender importieren</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cta" data-reveal style="transition-delay:.25s">
+        <div class="cta-copy">
+          <h2>Testen Sie die kostenfreie Demo-App</h2>
+          <p>Erleben Sie alle Funktionen live – ohne Registrierung und Verpflichtungen.</p>
+        </div>
+        <div class="demo-row">
+          <img src="demo-logo.png" alt="Demo App Symbol" class="demo-logo">
+          <a href="###DEMO_LINK###" class="download-btn" id="demoButton" download>Demo herunterladen</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <div id="impressumModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="impressumTitle">
+    <div class="modal">
+      <button class="modal-close" data-close="impressumModal" aria-label="Schließen">&times;</button>
+      <h2 id="impressumTitle">Impressum</h2>
+      <p><strong>Anbieter</strong><br>Daniel Michel<br>Asternweg 1<br>32339 Espelkamp</p>
+      <p><strong>Kontakt</strong><br>E-Mail: <a href="mailto:michel.daniel@gmx.net">michel.daniel@gmx.net</a></p>
+      <p><strong>Verantwortlich für den Inhalt gem. § 55 Abs. 2 RStV</strong><br>Daniel Michel</p>
+      <p><strong>Geltungsbereich</strong><br>Diese Angaben gelten für die Website praxiskalender.de und die zugehörige Kalender-App.</p>
+    </div>
+  </div>
+
+  <div id="datenschutzModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzTitle">
+    <div class="modal">
+      <button class="modal-close" data-close="datenschutzModal" aria-label="Schließen">&times;</button>
+      <h2 id="datenschutzTitle">Datenschutzerklärung (Pro-Version)</h2>
+      <p><strong>1. Allgemeines</strong><br>Diese App verarbeitet personenbezogene Daten ausschließlich zur Bereitstellung der Kalenderfunktionen. Die App richtet sich ausschließlich an gewerbliche Nutzer gemäß § 14 BGB.</p>
+      <p><strong>2. Zweck der Datenverarbeitung</strong><br>Die Datenverarbeitung erfolgt zur Verwaltung von Terminen, Kundeninformationen und Einnahmen innerhalb der App.</p>
+      <p><strong>3. Verarbeitete Daten</strong><br>- Kundenname<br>- Name der Mitarbeiterin bzw. des Mitarbeiters<br>- Behandlungsart<br>- Terminzeiten<br>- Preis<br>- Firebase UID zur Identifikation des Nutzers</p>
+      <p><strong>4. Speicherung und Hosting</strong><br>Die Daten werden in Google Firebase (Cloud Firestore) gespeichert. Anbieter: Google Ireland Ltd., Dublin. Serverstandorte befinden sich in der EU oder sicheren Drittstaaten.</p>
+      <p><strong>5. Rechtsgrundlage</strong><br>Art. 6 Abs. 1 lit. b DSGVO – zur Erfüllung des Nutzungsvertrags.</p>
+      <p><strong>6. Rechte der Nutzer</strong><br>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit. Kontakt: michel.daniel@gmx.net</p>
+      <p><strong>7. Datensicherheit</strong><br>Die App nutzt HTTPS-Verschlüsselung, Firestore Security Rules und technische sowie organisatorische Maßnahmen zur Sicherung Ihrer Daten.</p>
+      <p><strong>8. Löschung der Daten</strong><br>Nach Vertragsende werden alle Daten auf Wunsch gelöscht oder exportiert. Automatische Löschung spätestens 30 Tage nach Vertragsende.</p>
+      <p><strong>9. Änderungen</strong><br>Diese Datenschutzerklärung kann bei Bedarf angepasst werden. Die aktuelle Version ist immer in der App einsehbar.</p>
+    </div>
+  </div>
+
+  <div id="datenschutzDemoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzDemoTitle">
+    <div class="modal">
+      <button class="modal-close" data-close="datenschutzDemoModal" aria-label="Schließen">&times;</button>
+      <h2 id="datenschutzDemoTitle">Datenschutzerklärung (Demo-App)</h2>
+      <h3>1. Allgemeines</h3>
+      <p>Diese Demo-App verarbeitet personenbezogene Daten ausschließlich zur Demonstration der Kalenderfunktionen. Die App richtet sich ausschließlich an gewerbliche Nutzer gemäß § 14 BGB. Es findet keine Übermittlung an Server statt; die Verarbeitung erfolgt lokal auf Ihrem Endgerät.</p>
+      <h3>2. Zweck der Datenverarbeitung</h3>
+      <p>Die Datenverarbeitung erfolgt zur testweisen Verwaltung von Terminen, Kundeninformationen und Einnahmen innerhalb der App (Demozwecke).</p>
+      <h3>3. Verarbeitete Daten</h3>
+      <ul>
+        <li>Kundenname</li>
+        <li>Name der Mitarbeiterin / des Mitarbeiters</li>
+        <li>Behandlungsart</li>
+        <li>Terminbeginn und -ende</li>
+        <li>Preis</li>
+        <li>(optional) selbst gewähltes Logo sowie daraus abgeleitete Akzentfarbe für das App-Design</li>
+        <li>(optional) exportierte Dateien (ICS/PDF/CSV), die Sie bewusst erzeugen</li>
+      </ul>
+      <p><em>Hinweis:</em> Es werden keine Kontodaten, keine Firebase-UID und keine Analysedaten erhoben.</p>
+      <h3>4. Speicherung und Hosting</h3>
+      <p>Die Daten werden ausschließlich lokal auf Ihrem Gerät gespeichert:</p>
+      <ul>
+        <li>App-Speicher/SharedPreferences (Termine, Einstellungen)</li>
+        <li>Geräte-Dateisystem (nur wenn Sie aktiv ICS/PDF/CSV exportieren; z. B. in den „Download“-Ordner)</li>
+      </ul>
+      <p>Je nach Geräteeinstellung können diese lokalen Daten im Rahmen von Betriebssystem-Backups gesichert werden. Diese Backups werden vom Geräteanbieter verantwortet.</p>
+      <h3>5. Rechtsgrundlage</h3>
+      <p>Art. 6 Abs. 1 lit. b DSGVO (Durchführung der Demo-Nutzung/Testbereitstellung) und Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bereitstellung und Verbesserung einer funktionsfähigen Demo).</p>
+      <h3>6. Rechte der Nutzer</h3>
+      <p>Da die Daten ausschließlich lokal verarbeitet werden, können viele Rechte direkt durch Zurücksetzen oder Deinstallation der App ausgeübt werden (siehe Punkt 8).</p>
+      <h3>7. Datensicherheit</h3>
+      <p>Die App nutzt die Sicherheitsmechanismen des Betriebssystems (App-Sandbox, Geräte-Verschlüsselung). Es werden keine Daten an Dritte übertragen, sofern Sie nicht aktiv Dateien teilen.</p>
+      <p><strong>Berechtigungen:</strong></p>
+      <ul>
+        <li>Fotos/Medien/Dateien (Logo auswählen)</li>
+        <li>Speicher/Dateizugriff (Export von ICS/PDF/CSV)</li>
+      </ul>
+      <p>Diese Berechtigungen werden nur für die beschriebenen Zwecke verwendet.</p>
+      <h3>8. Löschung der Daten</h3>
+      <ul>
+        <li><strong>In-App:</strong> Über „App zurücksetzen“ werden alle lokal gespeicherten App-Daten gelöscht.</li>
+        <li><strong>Exportdateien:</strong> Von Ihnen erstellte Dateien (ICS/PDF/CSV) im Dateisystem müssen bei Bedarf manuell gelöscht werden.</li>
+        <li><strong>Deinstallation:</strong> Durch Deinstallation werden alle App-Daten auf dem Gerät entfernt (Exportdateien bleiben erhalten, bis Sie sie manuell löschen).</li>
+        <li><strong>Backups:</strong> Daten in Geräte-Backups unterliegen den Einstellungen Ihres Geräts/Anbieters.</li>
+      </ul>
+      <h3>9. Änderungen</h3>
+      <p>Diese Datenschutzerklärung kann bei Bedarf angepasst werden.</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Praxiskalender&nbsp;|&nbsp;
+    <a href="#" data-open="impressumModal">Impressum</a>&nbsp;|&nbsp;
+    <a href="#" data-open="datenschutzModal">Datenschutz (Pro)</a>&nbsp;|&nbsp;
+    <a href="#" data-open="datenschutzDemoModal">Datenschutz (Demo)</a>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',()=>{
+      const revealEls=document.querySelectorAll('[data-reveal]');
+      const observer=new IntersectionObserver((entries,obs)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');obs.unobserve(e.target);}});},{threshold:.2});
+      revealEls.forEach(el=>observer.observe(el));
+
+      const openLinks=document.querySelectorAll('[data-open]');
+      const closeEls=document.querySelectorAll('[data-close]');
+      openLinks.forEach(link=>{
+        link.addEventListener('click',e=>{
+          e.preventDefault();
+          const id=e.currentTarget.getAttribute('data-open');
+          const el=document.getElementById(id);
+          if(el) el.classList.add('active');
+        });
+      });
+      closeEls.forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const id=btn.getAttribute('data-close');
+          const el=document.getElementById(id);
+          if(el) el.classList.remove('active');
+        });
+      });
+      document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+        overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); }});
+      });
+    });
+  </script>
+</body>
+</html>

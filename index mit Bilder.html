@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Praxiskalender</title>
+
+  <!-- Scroll-Wiederherstellung sehr früh deaktivieren und ganz nach oben -->
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+      window.scrollTo(0,0);
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#0077cc; --brand-light:#2196f3; --bg:#f4f7fa; --card-bg:#fff; --text:#333; --radius:12px;
+      --logo-size:140px;
+      --brand-weak: rgba(0,119,204,.22);
+      --brand-weak-hover: rgba(0,119,204,.4);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    /* FIX: Scroll-Anchoring global aus, damit kein Sprung nach unten passiert */
+    html{scroll-behavior:smooth; overflow-anchor:none;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+    /* Scroll reveal */
+    [data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+    [data-reveal].is-visible{opacity:1;transform:none;}
+
+    /* Header */
+    header{
+      background:none;
+      padding:0 1rem .75rem;
+      color:#fff;
+      position:relative; overflow:hidden; text-align:center;
+    }
+    header::before, header::after{
+      content:"";
+      position:absolute; left:0; top:0; width:100%;
+      height:150px; /* Desktop */
+      pointer-events:none; z-index:0;
+    }
+    header::before{ background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 100%); }
+    header::after{ background:url('hero-wave.svg') bottom/cover no-repeat; }
+
+    .header-content{
+      position:relative; z-index:1;
+      display:flex; flex-direction:row; align-items:center; justify-content:center;
+      gap:1rem; flex-wrap:wrap; max-width:1100px; margin:0 auto;
+    }
+    .header-content img{width:200px; height:auto; transform:translateY(-6px);}
+    .header-text{ text-align:left; }
+    .header-text h1{font-size:2.4rem; font-weight:700; line-height:1.2; margin-bottom:.35rem;}
+    .header-text p{font-size:1.2rem; opacity:.95;}
+
+    /* Layout */
+    main{margin-top:0;}
+    .container{
+      max-width:1100px; margin:0 auto 3rem; padding:2rem 1rem;
+      background:var(--card-bg); border-radius:var(--radius); box-shadow:0 8px 30px rgba(0,0,0,.06);
+      text-align:center;
+    }
+    section{margin-bottom:2.5rem;}
+    h2{color:var(--brand); font-size:1.75rem; margin-bottom:1.1rem; font-weight:600;}
+
+    /* Features */
+    .features{display:flex; justify-content:center;}
+    .features ul{list-style:none; margin:0; padding:0; display:inline-block; text-align:left;}
+    .features li{position:relative; padding-left:1.5rem; margin:.5rem 0;}
+    .features li::before{content:"✔"; position:absolute; left:0; top:0; color:var(--brand); font-weight:700; line-height:1;}
+
+    /* CTA */
+    .cta{text-align:center;}
+    .cta-copy p{margin:0;}
+    .demo-row{ margin-top:1rem; display:inline-flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center; }
+    .demo-logo{width:var(--logo-size); height:auto;}
+    .download-btn{
+      display:inline-block; text-decoration:none; font-weight:600; font-size:1.125rem;
+      padding:.9rem 2rem; border-radius:50px; transition:background .25s ease;
+      background:#fff; color:var(--brand); border:2px solid var(--brand); white-space:nowrap;
+    }
+    .download-btn:hover{background:var(--brand-light); color:#fff;}
+
+    /* Gallery – Desktop/Tablet: Grid */
+    .gallery{ margin-top:2rem; text-align:center; }
+    .gallery .subtitle{ margin-top:-.35rem; color:#6b7280; }
+
+    .screenshot-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:1rem;
+      margin-top:1.25rem;
+    }
+    .screenshot{
+      position:relative; overflow:hidden; border-radius:var(--radius);
+      background:#fff; box-shadow:0 8px 30px rgba(0,0,0,.06);
+      cursor:zoom-in; transition:transform .25s ease, border-color .25s ease;
+      display:flex; flex-direction:column;
+      border:2px solid var(--brand-weak);
+    }
+    .screenshot:hover{ transform:translateY(-2px); border-color:var(--brand-weak-hover); }
+    .screenshot img{
+      width:100%; height:200px; object-fit:cover; display:block; transition:transform .35s ease;
+    }
+    .screenshot.wide img{ height:160px; }
+    .screenshot:hover img{ transform:scale(1.03); }
+    .screenshot .cap{
+      padding:.6rem .8rem; border-top:1px solid #eef2f7; font-size:.9rem; color:#4b5563; text-align:left;
+    }
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed; inset:0; padding:3vh 3vw; background:rgba(0,0,0,.88);
+      display:flex; align-items:center; justify-content:center;
+      visibility:hidden; opacity:0; transition:opacity .25s ease, visibility .25s ease; z-index:1000;
+    }
+    .lightbox.open{ visibility:visible; opacity:1; }
+    .lightbox img{
+      max-width:min(92vw,1100px); max-height:80vh;
+      border-radius:14px; box-shadow:0 20px 80px rgba(0,0,0,.55); margin:0 64px;
+    }
+    .lightbox .lb-caption{
+      position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
+      color:#fff; background:rgba(0,0,0,.45); padding:.55rem .85rem; border-radius:10px;
+      font-size:.95rem; max-width:92vw; text-align:center;
+    }
+    .lightbox .lb-close{
+      position:absolute; top:10px; right:14px; background:transparent; border:0; color:#fff; font-size:2rem; line-height:1; cursor:pointer;
+    }
+    .lightbox .lb-prev, .lightbox .lb-next{
+      position:absolute; top:50%; transform:translateY(-50%);
+      background:transparent; border:0; color:#fff; font-size:3rem; line-height:1; cursor:pointer; opacity:.9; padding:.25rem .5rem;
+    }
+    .lightbox .lb-prev{ left:14px; }
+    .lightbox .lb-next{ right:14px; }
+    .lightbox .lb-prev[disabled],
+    .lightbox .lb-next[disabled]{ opacity:.35; cursor:default; pointer-events:none; }
+
+    /* Pricing */
+    .pricing{ text-align:center; }
+    .price-grid{
+      display:flex; gap:1rem; justify-content:center; align-items:stretch; flex-wrap:wrap; margin-top:.75rem;
+    }
+    .price-card{
+      background:#fff; border:2px solid var(--brand-weak); border-radius:var(--radius);
+      padding:1rem 1.25rem; min-width:240px; box-shadow:0 8px 30px rgba(0,0,0,.06);
+      position:relative; transition:border-color .25s ease, transform .25s ease;
+    }
+    .price-card:hover{ border-color:var(--brand-weak-hover); transform:translateY(-2px); }
+    .price-card .price{ font-size:2rem; font-weight:700; color:var(--brand); }
+    .price-card .price span{ font-size:1rem; font-weight:600; color:#4b5563; margin-left:.25rem; }
+    .price-card.highlight{ border-color:var(--brand); }
+    .price-card .badge{
+      position:absolute; top:-10px; right:-10px; background:var(--brand); color:#fff; font-weight:700; font-size:.85rem;
+      padding:.25rem .5rem; border-radius:999px; box-shadow:0 6px 16px rgba(0,0,0,.15);
+    }
+
+    /* Modals */
+    .modal-overlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.6);
+      display:none; align-items:center; justify-content:center; z-index:1100;
+    }
+    .modal-overlay.active{ display:flex; }
+    .modal{
+      background:#fff; width:min(90%,700px); max-height:80vh; overflow:auto; border-radius:var(--radius);
+      padding:2rem; position:relative; box-shadow:0 8px 24px rgba(0,0,0,.18);
+    }
+    .modal h2{margin-bottom:1rem; color:var(--brand);}
+    .modal h3{margin:.75rem 0 .35rem; color:#0d6efd; font-size:1.05rem;}
+    .modal-close{position:absolute; top:.75rem; right:.75rem; background:none; border:none; font-size:1.75rem; cursor:pointer; color:var(--brand);}
+    .modal p{margin-bottom:1rem; font-size:.95rem; white-space:pre-line;}
+    .modal ul{margin:.25rem 0 1rem 1.25rem;}
+
+    footer{text-align:center; padding:2rem 1rem; font-size:.9rem; color:#888;}
+    footer a{color:var(--brand); text-decoration:none; margin:0 .25rem; font-weight:600;}
+
+    /* Tablet */
+    @media (max-width:900px){
+      header::before, header::after{ height:170px; }
+      .screenshot-grid{ grid-template-columns:repeat(2, 1fr); }
+      .screenshot img{ height:180px; }
+      .screenshot.wide img{ height:140px; }
+    }
+
+    /* Mobile – Karussell auf Flex, blauer Streifen höher */
+    @media(max-width:650px){
+      .header-content{ gap:.2rem; }
+      .header-text{ text-align:center; }
+      .header-text h1{font-size:2rem;}
+      .header-text p{font-size:1.05rem;}
+      .header-content img{ transform:translateY(32px); }
+      .demo-logo{width:110px;}
+      .download-btn{width:100%;}
+      .demo-row{ justify-content:center;}
+      header::before, header::after{ height:320px; }
+
+      .screenshot-grid{
+        display:flex;
+        gap:.75rem;
+        overflow-x:auto;
+        padding-inline:0;
+        scroll-snap-type:x mandatory;
+        -webkit-overflow-scrolling:touch;
+        scroll-behavior:smooth;
+        overscroll-behavior-x: contain;
+        overflow-anchor: none;
+      }
+      .screenshot{
+        scroll-snap-align:start;
+        flex: 0 0 85%;
+      }
+      .screenshot-grid::-webkit-scrollbar{ display:none; }
+      .screenshot-grid{ scrollbar-width:none; }
+
+      /* Snap temporär deaktivierbar für Initial-Positionierung */
+      .screenshot-grid.no-snap{ scroll-snap-type:none !important; }
+
+      .screenshot img{ height:200px; }
+      .screenshot.wide img{ height:160px; }
+
+      .price-grid{ gap:.75rem; }
+      .price-card{ min-width:260px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content" data-reveal>
+      <img src="Logo white.png" alt="Kalender-App Logo">
+      <div class="header-text">
+        <h1>Individuell &amp; effizient</h1>
+        <p>Optimieren Sie Ihre Terminplanung</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" data-reveal style="transition-delay:.15s">
+      <section>
+        <h2>Was diese Kalender-App besonders macht</h2>
+        <div class="features">
+          <ul>
+            <li data-reveal style="transition-delay:.2s">Individuelle Anpassung an Ihre Praxisbedürfnisse</li>
+            <li data-reveal style="transition-delay:.3s">Einzeltermine teilen – einfach per Mail oder WhatsApp</li>
+            <li data-reveal style="transition-delay:.4s">Automatische Zeit- und Preisberechnung je nach Behandlung</li>
+            <li data-reveal style="transition-delay:.5s">Einnahmenübersicht als PDF-Download</li>
+            <li data-reveal style="transition-delay:.6s">Termine exportieren &amp; in andere Kalender importieren</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="cta" data-reveal style="transition-delay:.25s">
+        <div class="cta-copy">
+          <h2>Testen Sie die kostenfreie Demo-App</h2>
+          <p>Erleben Sie alle Funktionen live – ohne Registrierung und Verpflichtungen.</p>
+        </div>
+        <div class="demo-row">
+          <img src="demo-logo.png" alt="Demo App Symbol" class="demo-logo">
+          <a href="###DEMO_LINK###" class="download-btn" id="demoButton" download>Demo herunterladen</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Screenshots / Galerie -->
+    <div class="container" data-reveal style="transition-delay:.35s">
+      <section class="gallery" id="screens">
+        <h2>Einblicke in die App</h2>
+
+        <div class="screenshot-grid" id="shotGrid">
+          <div class="screenshot" data-src="desktop-header.jpeg" data-caption="Startbildschirm">
+            <img src="desktop-header.jpeg" alt="Startbildschirm – Desktop" loading="lazy">
+            <div class="cap">Startbildschirm</div>
+          </div>
+          <div class="screenshot" data-src="mobile-month.jpeg" data-caption="Monatsansicht">
+            <img src="mobile-month.jpeg" alt="Monatsansicht – Mobile" loading="lazy">
+            <div class="cap">Monatsansicht</div>
+          </div>
+          <div class="screenshot" data-src="mobile-day.jpeg" data-caption="Tagesansicht">
+            <img src="mobile-day.jpeg" alt="Tagesansicht – Mobile" loading="lazy">
+            <div class="cap">Tagesansicht</div>
+          </div>
+          <div class="screenshot" data-src="mobile-revenue.jpeg" data-caption="Einnahmen – Aktueller Monat &amp; Gesamteinnahmen, Export als PDF/CSV.">
+            <img src="mobile-revenue.jpeg" alt="Einnahmen – Mobile" loading="lazy">
+            <div class="cap">Einnahmen</div>
+          </div>
+          <div class="screenshot" data-src="mobile-add.jpeg" data-caption="Termin hinzufügen">
+            <img src="mobile-add.jpeg" alt="Termin hinzufügen – Mobile" loading="lazy">
+            <div class="cap">Termin hinzufügen</div>
+          </div>
+          <div class="screenshot" data-src="mobile-drawer.jpeg" data-caption="Navigation">
+            <img src="mobile-drawer.jpeg" alt="Navigation – Mobile" loading="lazy">
+            <div class="cap">Navigation</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Preise -->
+    <div class="container" data-reveal style="transition-delay:.45s">
+      <section class="pricing" id="preise">
+        <h2>Preise - Vollversion</h2>
+        <div class="price-grid">
+          <div class="price-card">
+            <div class="price">ab 10&nbsp;€<span>/Monat</span></div>
+          </div>
+          <div class="price-card highlight">
+            <div class="badge">−16,66&nbsp;%</div>
+            <div class="price">ab 100&nbsp;€<span>/Jahr</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modals und Footer (unverändert) -->
+  <div id="impressumModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="impressumTitle" aria-hidden="true">
+    <div class="modal">
+      <button class="modal-close" data-close="impressumModal" aria-label="Schließen">&times;</button>
+      <h2 id="impressumTitle">Impressum</h2>
+      <p><strong>Anbieter</strong><br>Daniel Michel<br>Asternweg 1<br>32339 Espelkamp</p>
+      <p><strong>Kontakt</strong><br>E-Mail: <a href="mailto:michel.daniel@gmx.net">michel.daniel@gmx.net</a></p>
+      <p><strong>Verantwortlich für den Inhalt gem. § 55 Abs. 2 RStV</strong><br>Daniel Michel</p>
+      <p><strong>Geltungsbereich</strong><br>Diese Angaben gelten für die Website praxiskalender.de und die zugehörige Kalender-App.</p>
+    </div>
+  </div>
+
+  <div id="datenschutzModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzTitle" aria-hidden="true">
+    <div class="modal">
+      <button class="modal-close" data-close="datenschutzModal" aria-label="Schließen">&times;</button>
+      <h2 id="datenschutzTitle">Datenschutzerklärung (Vollversion)</h2>
+      <p><strong>1. Allgemeines</strong><br>Diese App verarbeitet personenbezogene Daten ausschließlich zur Bereitstellung der Kalenderfunktionen. Die App richtet sich ausschließlich an gewerbliche Nutzer gemäß § 14 BGB.</p>
+      <p><strong>2. Zweck der Datenverarbeitung</strong><br>Die Datenverarbeitung erfolgt zur Verwaltung von Terminen, Kundeninformationen und Einnahmen innerhalb der App.</p>
+      <p><strong>3. Verarbeitete Daten</strong><br>- Kundenname<br>- Name der Mitarbeiterin bzw. des Mitarbeiters<br>- Behandlungsart<br>- Terminzeiten<br>- Preis<br>- Firebase UID zur Identifikation des Nutzers</p>
+      <p><strong>4. Speicherung und Hosting</strong><br>Die Daten werden in Google Firebase (Cloud Firestore) gespeichert. Anbieter: Google Ireland Ltd., Dublin. Serverstandorte befinden sich in der EU oder sicheren Drittstaaten.</p>
+      <p><strong>5. Rechtsgrundlage</strong><br>Art. 6 Abs. 1 lit. b DSGVO – zur Erfüllung des Nutzungsvertrags.</p>
+      <p><strong>6. Rechte der Nutzer</strong><br>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit. Kontakt: michel.daniel@gmx.net</p>
+      <p><strong>7. Datensicherheit</strong><br>Die App nutzt HTTPS-Verschlüsselung, Firestore Security Rules und technische sowie organisatorische Maßnahmen zur Sicherung Ihrer Daten.</p>
+      <p><strong>8. Löschung der Daten</strong><br>Nach Vertragsende werden alle Daten auf Wunsch gelöscht oder exportiert. Automatische Löschung spätestens 30 Tage nach Vertragsende.</p>
+      <p><strong>9. Änderungen</strong><br>Diese Datenschutzerklärung kann bei Bedarf angepasst werden. Die aktuelle Version ist immer in der App einsehbar.</p>
+    </div>
+  </div>
+
+  <div id="datenschutzDemoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzDemoTitle" aria-hidden="true">
+    <div class="modal">
+      <button class="modal-close" data-close="datenschutzDemoModal" aria-label="Schließen">&times;</button>
+      <h2 id="datenschutzDemoTitle">Datenschutzerklärung (Demo-App)</h2>
+      <h3>1. Allgemeines</h3>
+      <p>Diese Demo-App verarbeitet personenbezogene Daten ausschließlich zur Demonstration der Kalenderfunktionen. Die App richtet sich ausschließlich an gewerbliche Nutzer gemäß § 14 BGB. Es findet keine Übermittlung an Server statt; die Verarbeitung erfolgt lokal auf Ihrem Endgerät.</p>
+      <h3>2. Zweck der Datenverarbeitung</h3>
+      <p>Die Datenverarbeitung erfolgt zur testweisen Verwaltung von Terminen, Kundeninformationen und Einnahmen innerhalb der App (Demozwecke).</p>
+      <h3>3. Verarbeitete Daten</h3>
+      <ul>
+        <li>Kundenname</li>
+        <li>Name der Mitarbeiterin / des Mitarbeiters</li>
+        <li>Behandlungsart</li>
+        <li>Terminbeginn und -ende</li>
+        <li>Preis</li>
+        <li>(optional) selbst gewähltes Logo sowie daraus abgeleitete Akzentfarbe für das App-Design</li>
+        <li>(optional) exportierte Dateien (ICS/PDF/CSV), die Sie bewusst erzeugen</li>
+      </ul>
+      <p><em>Hinweis:</em> Es werden keine Kontodaten, keine Firebase-UID und keine Analysedaten erhoben.</p>
+      <h3>4. Speicherung und Hosting</h3>
+      <p>Die Daten werden ausschließlich lokal auf Ihrem Gerät gespeichert:</p>
+      <ul>
+        <li>App-Speicher/SharedPreferences (Termine, Einstellungen)</li>
+        <li>Geräte-Dateisystem (nur wenn Sie aktiv ICS/PDF/CSV exportieren; z. B. in den „Download“-Ordner)</li>
+      </ul>
+      <p>Je nach Geräteeinstellung können diese lokalen Daten im Rahmen von Betriebssystem-Backups (z. B. Google-Drive-Backup) gesichert werden. Diese Backups werden vom Geräteanbieter verantwortet.</p>
+      <h3>5. Rechtsgrundlage</h3>
+      <p>Art. 6 Abs. 1 lit. b DSGVO (Durchführung der Demo-Nutzung/Testbereitstellung) und Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bereitstellung und Verbesserung einer funktionsfähigen Demo).</p>
+      <h3>6. Rechte der Nutzer</h3>
+      <p>Da die Daten ausschließlich lokal verarbeitet werden, können viele Rechte direkt durch Zurücksetzen oder Deinstallation der App ausgeübt werden (siehe Punkt 8).</p>
+      <h3>7. Datensicherheit</h3>
+      <p>Die App nutzt die Sicherheitsmechanismen des Betriebssystems (App-Sandbox, Geräte-Verschlüsselung). Es werden keine Daten an Dritte übertragen, sofern Sie nicht aktiv Dateien teilen.</p>
+      <p><strong>Berechtigungen:</strong></p>
+      <ul>
+        <li>Fotos/Medien/Dateien (Logo auswählen)</li>
+        <li>Speicher/Dateizugriff (Export von ICS/PDF/CSV)</li>
+      </ul>
+      <p>Diese Berechtigungen werden nur für die beschriebenen Zwecke verwendet.</p>
+      <h3>8. Löschung der Daten</h3>
+      <ul>
+        <li><strong>In-App:</strong> Über „App zurücksetzen“ werden alle lokal gespeicherten App-Daten gelöscht.</li>
+        <li><strong>Exportdateien:</strong> Von Ihnen erstellte Dateien (ICS/PDF/CSV) im Dateisystem müssen bei Bedarf manuell gelöscht werden.</li>
+        <li><strong>Deinstallation:</strong> Durch Deinstallation werden alle App-Daten auf dem Gerät entfernt (Exportdateien bleiben erhalten, bis Sie sie manuell löschen).</li>
+        <li><strong>Backups:</strong> Daten in Geräte-Backups unterliegen den Einstellungen Ihres Geräts/Anbieters.</li>
+      </ul>
+      <h3>9. Änderungen</h3>
+      <p>Diese Datenschutzerklärung kann bei Bedarf angepasst werden.</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Praxiskalender&nbsp;|&nbsp;
+    <a href="#" data-open="impressumModal">Impressum</a>&nbsp;|&nbsp;
+    <a href="#" data-open="datenschutzModal">Datenschutz (Vollversion)</a>&nbsp;|&nbsp;
+    <a href="#" data-open="datenschutzDemoModal">Datenschutz (Demo)</a>
+  </footer>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" aria-modal="true" role="dialog">
+    <button class="lb-close" aria-label="Schließen">&times;</button>
+    <button class="lb-prev" aria-label="Vorheriges Bild">‹</button>
+    <img alt="">
+    <button class="lb-next" aria-label="Nächstes Bild">›</button>
+    <div class="lb-caption"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',()=>{
+      window.scrollTo(0,0);
+      window.addEventListener('pageshow', (e)=>{ if(e.persisted) window.scrollTo(0,0); });
+
+      // Reveal
+      const revealEls=document.querySelectorAll('[data-reveal]');
+      const observer=new IntersectionObserver((entries,obs)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-visible'); obs.unobserve(e.target); }});
+      },{threshold:.2});
+      revealEls.forEach(el=>observer.observe(el));
+
+      // Modals
+      const openLinks=document.querySelectorAll('[data-open]');
+      const closeEls=document.querySelectorAll('[data-close]');
+      openLinks.forEach(link=>{
+        link.addEventListener('click',e=>{
+          e.preventDefault();
+          const id=e.currentTarget.getAttribute('data-open');
+          const el=document.getElementById(id);
+          if(el){ el.classList.add('active'); el.setAttribute('aria-hidden','false'); }
+        });
+      });
+      closeEls.forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const id=btn.getAttribute('data-close');
+          const el=document.getElementById(id);
+          if(el){ el.classList.remove('active'); el.setAttribute('aria-hidden','true'); }
+        });
+      });
+      document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+        overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); }});
+      });
+
+      // Lightbox
+      const shots = Array.from(document.querySelectorAll('#shotGrid .screenshot'));
+      const lb = document.getElementById('lightbox');
+      const lbImg = lb.querySelector('img');
+      const lbCap = lb.querySelector('.lb-caption');
+      const btnPrev = lb.querySelector('.lb-prev');
+      const btnNext = lb.querySelector('.lb-next');
+      const btnClose = lb.querySelector('.lb-close');
+      let idx = 0;
+
+      function updateArrows(){ btnPrev.disabled = (idx === 0); btnNext.disabled = (idx === shots.length - 1); }
+      function openAt(i){
+        idx = Math.max(0, Math.min(i, shots.length - 1));
+        const item = shots[idx];
+        lbImg.src = item.getAttribute('data-src') || item.querySelector('img').src;
+        lbCap.textContent = item.getAttribute('data-caption') || item.querySelector('.cap')?.textContent || '';
+        lb.classList.add('open'); updateArrows();
+      }
+      function next(){ if (idx < shots.length - 1) openAt(idx + 1); }
+      function prev(){ if (idx > 0) openAt(idx - 1); }
+      function closeLB(){ lb.classList.remove('open'); }
+
+      shots.forEach((el,i)=> el.addEventListener('click',()=>openAt(i)));
+      btnNext.addEventListener('click', next);
+      btnPrev.addEventListener('click', prev);
+      btnClose.addEventListener('click', closeLB);
+      lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
+      document.addEventListener('keydown', e=>{
+        if(!lb.classList.contains('open')) return;
+        if(e.key==='Escape') closeLB();
+        if(e.key==='ArrowRight') next();
+        if(e.key==='ArrowLeft') prev();
+      });
+
+      /* Mobile-Karussell garantiert beim ersten Item starten – ohne scrollIntoView */
+      const grid = document.getElementById('shotGrid');
+      const mq = window.matchMedia('(max-width:650px)');
+
+      function snapToFirstHard(){
+        if(!grid) return;
+        if(!mq.matches){ grid.scrollLeft = 0; return; }
+        grid.classList.add('no-snap');
+        grid.scrollLeft = 0;                 // nur horizontal, keine Seitenbewegung
+        requestAnimationFrame(()=> requestAnimationFrame(()=>{
+          grid.classList.remove('no-snap');
+        }));
+      }
+
+      function initCarouselStart(){
+        if(!grid) return;
+        if(mq.matches) snapToFirstHard();
+      }
+
+      initCarouselStart();
+      window.addEventListener('load', initCarouselStart);
+      window.addEventListener('resize', initCarouselStart);
+      window.addEventListener('orientationchange', initCarouselStart);
+      window.addEventListener('pageshow', (e)=>{ if(e.persisted) initCarouselStart(); });
+
+      if(grid){
+        const imgs = grid.querySelectorAll('img');
+        let pending = 0;
+        imgs.forEach(img=>{
+          if(!img.complete){
+            pending++;
+            img.addEventListener('load', ()=>{ pending--; if(pending===0) initCarouselStart(); }, {once:true});
+          }
+        });
+        if(pending===0) initCarouselStart();
+        setTimeout(initCarouselStart, 300);
+      }
+    });
+  </script>
+</body>
+</html>
