@@ -1,33 +1,45 @@
 // api/send-request.js
-// Serverless Mailversand via Resend (ohne SMTP, ohne Mailprogramm)
+// Serverless Mailversand via Resend (ESM, kompatibel mit "type":"module")
 
-const { Resend } = require('resend');
+import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Minimaler CORS-Schutz (nur POST, nur JSON)
-function badReq(res, msg) {
-  return res.status(400).json({ ok: false, error: msg });
+// Fallback-kompatible JSON-Antwort (funktioniert mit/ohne res.status/res.json)
+function sendJson(res, status, payload) {
+  if (typeof res.status === 'function' && typeof res.json === 'function') {
+    return res.status(status).json(payload);
+  }
+  res.statusCode = status;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(payload));
 }
 
-module.exports = async (req, res) => {
+async function readJson(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  const raw = Buffer.concat(chunks).toString('utf8');
+  if (!raw) return {};
+  try { return JSON.parse(raw); } catch { return null; }
+}
+
+export default async function handler(req, res) {
   try {
     if (req.method !== 'POST') {
       res.setHeader('Allow', 'POST');
-      return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
+      return sendJson(res, 405, { ok: false, error: 'Method Not Allowed' });
     }
 
-    // Erwartet JSON
-    const { anrede, vorname, nachname, email } = req.body || {};
+    const body = await readJson(req);
+    if (!body) return sendJson(res, 400, { ok: false, error: 'Ungültiges JSON.' });
+
+    const { anrede, vorname, nachname, email } = body;
     if (!anrede || !vorname || !nachname || !email) {
-      return badReq(res, 'Bitte alle Felder ausfüllen (Anrede, Vorname, Nachname, E-Mail).');
+      return sendJson(res, 400, { ok: false, error: 'Bitte Anrede, Vorname, Nachname und E-Mail ausfüllen.' });
     }
-
-    // einfache Validierung
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailOk) return badReq(res, 'Bitte eine gültige E-Mail-Adresse eingeben.');
+    if (!emailOk) return sendJson(res, 400, { ok: false, error: 'Bitte gültige E-Mail-Adresse eingeben.' });
 
-    // E-Mail-Inhalte
     const subject = 'Anfrage Vollversion – Praxiskalender';
     const text = `Neue Anfrage zur Vollversion:
 
@@ -44,24 +56,22 @@ E-Mail: ${email}
       </div>
     `;
 
-    // Versand: From kann ohne eigene Domain über onboarding@resend.dev laufen
-    const sendResult = await resend.emails.send({
-      from: 'Praxiskalender <onboarding@resend.dev>',
+    const result = await resend.emails.send({
+      from: 'Praxiskalender <onboarding@resend.dev>', // funktioniert ohne eigene Domain
       to: ['michel.daniel@gmx.net'],
-      reply_to: email, // optional: Antwort geht direkt an Absender
+      reply_to: email, // Antworten landen beim Absender
       subject,
       text,
       html,
     });
 
-    if (sendResult.error) {
-      console.error('Resend error:', sendResult.error);
-      return res.status(500).json({ ok: false, error: 'Versand fehlgeschlagen.' });
+    if (result?.error) {
+      console.error('Resend error:', result.error);
+      return sendJson(res, 500, { ok: false, error: 'Versand fehlgeschlagen.' });
     }
-
-    return res.status(200).json({ ok: true });
+    return sendJson(res, 200, { ok: true });
   } catch (err) {
     console.error('Mailer exception:', err);
-    return res.status(500).json({ ok: false, error: 'Unerwarteter Fehler beim Versand.' });
+    return sendJson(res, 500, { ok: false, error: 'Unerwarteter Fehler beim Versand.' });
   }
-};
+}
