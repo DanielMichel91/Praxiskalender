@@ -1,56 +1,67 @@
-// /api/send-request.js  (Vercel Serverless Function)
-import nodemailer from 'nodemailer';
+// api/send-request.js
+// Serverless Mailversand via Resend (ohne SMTP, ohne Mailprogramm)
 
-const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
-const safe = (s) => String(s || '').slice(0, 200);
+const { Resend } = require('resend');
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Minimaler CORS-Schutz (nur POST, nur JSON)
+function badReq(res, msg) {
+  return res.status(400).json({ ok: false, error: msg });
+}
+
+module.exports = async (req, res) => {
   try {
-    const { anrede, vorname, nachname, email, company } = req.body || {};
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', 'POST');
+      return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
+    }
 
-    // Honeypot -> Bot
-    if (company) return res.status(200).json({ ok: true });
-
+    // Erwartet JSON
+    const { anrede, vorname, nachname, email } = req.body || {};
     if (!anrede || !vorname || !nachname || !email) {
-      return res.status(400).json({ error: 'Bitte alle Felder ausfüllen.' });
-    }
-    if (!isEmail(email)) {
-      return res.status(400).json({ error: 'Ungültige E-Mail-Adresse.' });
+      return badReq(res, 'Bitte alle Felder ausfüllen (Anrede, Vorname, Nachname, E-Mail).');
     }
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    // einfache Validierung
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!emailOk) return badReq(res, 'Bitte eine gültige E-Mail-Adresse eingeben.');
 
-    const subject = `Anfrage Vollversion – ${safe(anrede)} ${safe(nachname)}`;
-    const text =
-`Anrede: ${safe(anrede)}
-Vorname: ${safe(vorname)}
-Nachname: ${safe(nachname)}
-E-Mail: ${safe(email)}
+    // E-Mail-Inhalte
+    const subject = 'Anfrage Vollversion – Praxiskalender';
+    const text = `Neue Anfrage zur Vollversion:
 
-Bitte um Kontaktaufnahme zur Vollversion.`;
+Anrede: ${anrede}
+Name:   ${vorname} ${nachname}
+E-Mail: ${email}
+`;
+    const html = `
+      <div style="font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5;">
+        <h2 style="margin:0 0 8px 0;">Anfrage Vollversion – Praxiskalender</h2>
+        <p style="margin:0 0 8px 0;"><strong>Anrede:</strong> ${anrede}</p>
+        <p style="margin:0 0 8px 0;"><strong>Name:</strong> ${vorname} ${nachname}</p>
+        <p style="margin:0 0 8px 0;"><strong>E-Mail:</strong> ${email}</p>
+      </div>
+    `;
 
-    await transporter.sendMail({
-      from: process.env.FROM_EMAIL || process.env.SMTP_USER,
-      to: process.env.TO_EMAIL || 'michel.daniel@gmx.net',
+    // Versand: From kann ohne eigene Domain über onboarding@resend.dev laufen
+    const sendResult = await resend.emails.send({
+      from: 'Praxiskalender <onboarding@resend.dev>',
+      to: ['michel.daniel@gmx.net'],
+      reply_to: email, // optional: Antwort geht direkt an Absender
       subject,
       text,
+      html,
     });
+
+    if (sendResult.error) {
+      console.error('Resend error:', sendResult.error);
+      return res.status(500).json({ ok: false, error: 'Versand fehlgeschlagen.' });
+    }
 
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('Mailer error:', err);
-    return res.status(500).json({ error: 'Serverfehler beim Versand.' });
+    console.error('Mailer exception:', err);
+    return res.status(500).json({ ok: false, error: 'Unerwarteter Fehler beim Versand.' });
   }
-}
+};
