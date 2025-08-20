@@ -1,5 +1,5 @@
-// api/send-request.js  (ESM, "type":"module")
-const RESEND_URL = 'https://api.resend.com/emails';
+// api/send-request.js  (ESM, "type":"module" in package.json)
+const SG_URL = 'https://api.sendgrid.com/v3/mail/send';
 
 function sendJson(res, status, payload) {
   if (typeof res.status === 'function' && typeof res.json === 'function') {
@@ -34,6 +34,14 @@ export default async function handler(req, res) {
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!emailOk) return sendJson(res, 400, { ok: false, error: 'Bitte gültige E-Mail-Adresse eingeben.' });
 
+    const FROM = process.env.FROM_EMAIL;             // verifizierte Single-Sender-Adresse
+    const TO = process.env.RECEIVER_EMAIL || 'michel.daniel@gmx.net';
+    const KEY = process.env.SENDGRID_API_KEY;
+
+    if (!KEY || !FROM) {
+      return sendJson(res, 500, { ok: false, error: 'Mailserver ist nicht konfiguriert (Umgebungsvariablen fehlen).' });
+    }
+
     const subject = 'Anfrage Vollversion – Praxiskalender';
     const html = `
       <div style="font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5;">
@@ -50,31 +58,31 @@ Name:   ${vorname} ${nachname}
 E-Mail: ${email}
 `;
 
-    // Aufruf der Resend-HTTP-API per fetch
-    const r = await fetch(RESEND_URL, {
+    const sgRes = await fetch(SG_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Authorization': `Bearer ${KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Praxiskalender <onboarding@resend.dev>',
-        to: ['michel.daniel@gmx.net'],
-        reply_to: email,
-        subject,
-        html,
-        text,
+        personalizations: [{ to: [{ email: TO }], subject }],
+        from: { email: FROM, name: 'Praxiskalender' },
+        reply_to: { email },
+        content: [
+          { type: 'text/plain', value: text },
+          { type: 'text/html',  value: html },
+        ],
       }),
     });
 
-    const data = await r.json().catch(() => null);
-
-    if (!r.ok || data?.error) {
-      console.error('Resend response error:', data || r.statusText);
-      return sendJson(res, 500, { ok: false, error: 'Versand fehlgeschlagen.' });
+    // SendGrid gibt bei Erfolg 202 zurück (Accepted)
+    if (sgRes.status === 202) {
+      return sendJson(res, 200, { ok: true });
     }
 
-    return sendJson(res, 200, { ok: true });
+    const errTxt = await sgRes.text();
+    console.error('SendGrid error:', sgRes.status, errTxt);
+    return sendJson(res, 500, { ok: false, error: 'Versand fehlgeschlagen.' });
   } catch (err) {
     console.error('Mailer exception:', err);
     return sendJson(res, 500, { ok: false, error: 'Unerwarteter Fehler beim Versand.' });
