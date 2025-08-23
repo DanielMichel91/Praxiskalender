@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Praxiskalender</title>
 
+  <!-- Meta / Sharing -->
+  <meta name="description" content="Praxiskalender – die flexible Kalender-App für Praxen. Demo testen, Preise & Funktionen.">
+  <meta property="og:title" content="Praxiskalender">
+  <meta property="og:description" content="Individuell & effizient – optimieren Sie Ihre Terminplanung.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://praxiskalender.de/">
+  <meta property="og:image" content="/og-image.jpg">
+  <link rel="icon" href="/favicon.ico">
+
   <!-- Immer ganz oben starten -->
   <script>
     if ('scrollRestoration' in history) {
@@ -13,8 +22,17 @@
     }
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Lokale Schrift (statt externer Google-Fonts) -->
+  <!-- Lege die WOFF2-Dateien unter /fonts/ ab oder passe die Pfade an -->
   <style>
+    @font-face{
+      font-family:'Inter';
+      font-style:normal;
+      font-weight:100 900;
+      font-display:swap;
+      src: url('/fonts/Inter-VariableFont.woff2') format('woff2-variations'),
+           url('/fonts/Inter-VariableFont.woff2') format('woff2');
+    }
     :root{
       --brand:#0077cc; --brand-light:#2196f3; --bg:#f4f7fa; --card-bg:#fff; --text:#333; --radius:12px;
       --logo-size:140px;
@@ -23,7 +41,7 @@
     }
     *{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth; overflow-anchor:none;}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
 
     [data-reveal]{opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
     [data-reveal].is-visible{opacity:1;transform:none;}
@@ -49,7 +67,7 @@
       display:flex; flex-direction:row; align-items:center; justify-content:center;
       gap:1rem; flex-wrap:wrap; max-width:1100px; margin:0 auto;
     }
-    .header-content img{width:200px; height:auto; transform:translateY(-6px);}
+    .header-content img{width:200px; height:200px; transform:translateY(-6px); aspect-ratio:1.6/1;}
     .header-text{ text-align:left; }
     .header-text h1{font-size:2.4rem; font-weight:700; line-height:1.2; margin-bottom:.35rem;}
     .header-text p{font-size:1.2rem; opacity:.95;}
@@ -254,7 +272,7 @@
 <body>
   <header>
     <div class="header-content" data-reveal>
-      <img src="Logo white.png" alt="Kalender-App Logo">
+      <img src="Logo white.png" alt="Kalender-App Logo" width="200" height="120">
       <div class="header-text">
         <h1>Individuell &amp; effizient</h1>
         <p>Optimieren Sie Ihre Terminplanung</p>
@@ -262,7 +280,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="appMain">
     <div class="container" data-reveal style="transition-delay:.15s">
       <section>
         <h2>Was diese Kalender-App besonders macht</h2>
@@ -283,8 +301,9 @@
           <p>Erleben Sie alle Funktionen live – ohne Registrierung und Verpflichtungen.</p>
         </div>
         <div class="demo-row">
-          <img src="demo-logo.png" alt="Demo App Symbol" class="demo-logo">
-          <a href="###DEMO_LINK###" class="download-btn" id="demoButton" download>Demo herunterladen</a>
+          <img src="demo-logo.png" alt="Demo App Symbol" class="demo-logo" width="140" height="140">
+          <!-- download entfernt, da meist wirkungslos bei Cross-Origin -->
+          <a href="###DEMO_LINK###" class="download-btn" id="demoButton">Demo herunterladen</a>
         </div>
       </section>
     </div>
@@ -296,27 +315,27 @@
 
         <div class="screenshot-grid" id="shotGrid">
           <div class="screenshot" data-src="desktop-header.jpeg" data-caption="Startbildschirm">
-            <img src="desktop-header.jpeg" alt="Startbildschirm – Desktop" loading="lazy">
+            <img src="desktop-header.jpeg" alt="Startbildschirm – Desktop" loading="lazy" width="600" height="200">
             <div class="cap">Startbildschirm</div>
           </div>
           <div class="screenshot" data-src="mobile-month.jpeg" data-caption="Monatsansicht">
-            <img src="mobile-month.jpeg" alt="Monatsansicht – Mobile" loading="lazy">
+            <img src="mobile-month.jpeg" alt="Monatsansicht – Mobile" loading="lazy" width="600" height="200">
             <div class="cap">Monatsansicht</div>
           </div>
           <div class="screenshot" data-src="mobile-day.jpeg" data-caption="Tagesansicht">
-            <img src="mobile-day.jpeg" alt="Tagesansicht – Mobile" loading="lazy">
+            <img src="mobile-day.jpeg" alt="Tagesansicht – Mobile" loading="lazy" width="600" height="200">
             <div class="cap">Tagesansicht</div>
           </div>
           <div class="screenshot" data-src="mobile-revenue.jpeg" data-caption="Einnahmen – Aktueller Monat &amp; Gesamteinnahmen, Export als PDF/CSV.">
-            <img src="mobile-revenue.jpeg" alt="Einnahmen – Mobile" loading="lazy">
+            <img src="mobile-revenue.jpeg" alt="Einnahmen – Mobile" loading="lazy" width="600" height="200">
             <div class="cap">Einnahmen</div>
           </div>
           <div class="screenshot" data-src="mobile-add.jpeg" data-caption="Termin hinzufügen">
-            <img src="mobile-add.jpeg" alt="Termin hinzufügen – Mobile" loading="lazy">
+            <img src="mobile-add.jpeg" alt="Termin hinzufügen – Mobile" loading="lazy" width="600" height="200">
             <div class="cap">Termin hinzufügen</div>
           </div>
           <div class="screenshot" data-src="mobile-drawer.jpeg" data-caption="Navigation">
-            <img src="mobile-drawer.jpeg" alt="Navigation – Mobile" loading="lazy">
+            <img src="mobile-drawer.jpeg" alt="Navigation – Mobile" loading="lazy" width="600" height="200">
             <div class="cap">Navigation</div>
           </div>
         </div>
@@ -326,14 +345,14 @@
     <!-- Preise -->
     <div class="container" data-reveal style="transition-delay:.45s">
       <section class="pricing" id="preise">
-        <h2>Preise - Vollversion</h2>
+        <h2>Preise – Vollversion <small style="font-weight:600;color:#6b7280">nur für Unternehmen</small></h2>
         <div class="price-grid">
           <div class="price-card">
-            <div class="price">ab 10&nbsp;€<span>/Monat</span></div>
+            <div class="price">ab 10&nbsp;€<span>/Monat zzgl. USt.</span></div>
           </div>
           <div class="price-card highlight">
             <div class="badge">−16,66&nbsp;%</div>
-            <div class="price">ab 100&nbsp;€<span>/Jahr</span></div>
+            <div class="price">ab 100&nbsp;€<span>/Jahr zzgl. USt.</span></div>
           </div>
         </div>
 
@@ -350,9 +369,30 @@
       <button class="modal-close" data-close="impressumModal" aria-label="Schließen">&times;</button>
       <h2 id="impressumTitle">Impressum</h2>
       <p><strong>Anbieter</strong><br>Daniel Michel<br>Asternweg 1<br>32339 Espelkamp</p>
-      <p><strong>Kontakt</strong><br>E-Mail: <a href="mailto:michel.daniel@gmx.net">michel.daniel@gmx.net</a></p>
-      <p><strong>Verantwortlich für den Inhalt gem. § 55 Abs. 2 RStV</strong><br>Daniel Michel</p>
+      <p><strong>Kontakt</strong><br>E-Mail: <a href="mailto:michel.daniel@gmx.net">michel.daniel@gmx.net</a><br>(oder über das Anfrageformular)</p>
+      <p><strong>Verantwortlich i.S.d. § 18 Abs. 2 MStV</strong><br>Daniel Michel</p>
+      <!-- Optional: nur einfügen, wenn vorhanden
+      <p><strong>USt-ID</strong>: DE…</p>
+      -->
       <p><strong>Geltungsbereich</strong><br>Diese Angaben gelten für die Website praxiskalender.de und die zugehörige Kalender-App.</p>
+    </div>
+  </div>
+
+  <!-- Datenschutz (Website) Modal -->
+  <div id="datenschutzSiteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzSiteTitle" aria-hidden="true">
+    <div class="modal">
+      <button class="modal-close" data-close="datenschutzSiteModal" aria-label="Schließen">&times;</button>
+      <h2 id="datenschutzSiteTitle">Datenschutzerklärung (Website)</h2>
+      <p><strong>Verantwortlicher</strong><br>Daniel Michel, Asternweg 1, 32339 Espelkamp, E-Mail: <a href="mailto:michel.daniel@gmx.net">michel.daniel@gmx.net</a></p>
+      <h3>1. Hosting/Server-Protokolle</h3>
+      <p>Beim Aufruf dieser Website werden technisch notwendige Daten (z.&nbsp;B. IP-Adresse, Datum/Uhrzeit, Referrer, User-Agent) in Server-Logs verarbeitet, um die Auslieferung der Seite sicherzustellen und Missbrauch zu verhindern. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren und funktionsfähigen Website). Logs werden vom Hoster nach den dort üblichen Fristen gelöscht.</p>
+      <h3>2. Externe Ressourcen/Cookies</h3>
+      <p>Es werden keine Tracking-Cookies eingesetzt. Web-Schriftarten werden lokal eingebunden; es erfolgt kein Abruf von Google-Fonts-Servern.</p>
+      <h3>3. Kontakt/Anfrageformular</h3>
+      <p>Bei Nutzung des Anfrageformulars verarbeiten wir Ihre Angaben (Anrede, Name, E-Mail, Unternehmer-Bestätigung) zur Bearbeitung Ihrer Anfrage. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen) oder lit. f DSGVO (berechtigtes Interesse an effizienter Kommunikation). Empfänger können Auftragsverarbeiter sein (z.&nbsp;B. Hosting-/Mail-Dienstleister). Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+      <h3>4. Ihre Rechte</h3>
+      <p>Sie haben Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und Widerspruch. Zudem besteht ein Beschwerderecht bei einer Datenschutz-Aufsichtsbehörde.</p>
+      <p style="color:#6b7280">Stand: 23.08.2025</p>
     </div>
   </div>
 
@@ -360,16 +400,16 @@
   <div id="datenschutzModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="datenschutzModal" aria-label="Schließen">&times;</button>
-      <h2 id="datenschutzTitle">Datenschutzerklärung (Vollversion)</h2>
-      <p><strong>1. Allgemeines</strong><br>Diese App verarbeitet personenbezogene Daten ausschließlich zur Bereitstellung der Kalenderfunktionen. Die App richtet sich ausschließlich an gewerbliche Nutzer gemäß § 14 BGB.</p>
-      <p><strong>2. Zweck der Datenverarbeitung</strong><br>Die Datenverarbeitung erfolgt zur Verwaltung von Terminen, Kundeninformationen und Einnahmen innerhalb der App.</p>
-      <p><strong>3. Verarbeitete Daten</strong><br>- Kundenname<br>- Name der Mitarbeiterin bzw. des Mitarbeiters<br>- Behandlungsart<br>- Terminzeiten<br>- Preis<br>- Firebase UID zur Identifikation des Nutzers</p>
-      <p><strong>4. Speicherung und Hosting</strong><br>Die Daten werden in Google Firebase (Cloud Firestore) gespeichert. Anbieter: Google Ireland Ltd., Dublin. Serverstandorte befinden sich in der EU oder sicheren Drittstaaten.</p>
-      <p><strong>5. Rechtsgrundlage</strong><br>Art. 6 Abs. 1 lit. b DSGVO – zur Erfüllung des Nutzungsvertrags.</p>
-      <p><strong>6. Rechte der Nutzer</strong><br>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit. Kontakt: michel.daniel@gmx.net</p>
-      <p><strong>7. Datensicherheit</strong><br>Die App nutzt HTTPS-Verschlüsselung, Firestore Security Rules und technische sowie organisatorische Maßnahmen zur Sicherung Ihrer Daten.</p>
-      <p><strong>8. Löschung der Daten</strong><br>Nach Vertragsende werden alle Daten auf Wunsch gelöscht oder exportiert. Automatische Löschung spätestens 30 Tage nach Vertragsende.</p>
-      <p><strong>9. Änderungen</strong><br>Diese Datenschutzerklärung kann bei Bedarf angepasst werden. Die aktuelle Version ist immer in der App einsehbar.</p>
+      <h2 id="datenschutzTitle">Datenschutzhinweise (App – Vollversion)</h2>
+      <p><strong>Rollen</strong><br>Die nutzende Praxis ist Verantwortliche i.S.d. DSGVO. Wir verarbeiten personenbezogene Daten <em>als Auftragsverarbeiter</em> gem. Art. 28 DSGVO in Ihrem Auftrag. Eine AVV wird bereitgestellt.</p>
+      <p><strong>Zweck der Verarbeitung</strong><br>Bereitstellung der Kalender-Funktionen (Terminverwaltung, Kundenverwaltung, Abrechnung/Reports) im Auftrag der Praxis.</p>
+      <p><strong>Kategorien personenbezogener Daten</strong><br>- Kundenname<br>- Name der Mitarbeiterin/des Mitarbeiters<br>- Behandlungsart (kann Gesundheitsbezug haben)<br>- Terminzeiten<br>- Preis<br>- Nutzer-Identifikator (z.&nbsp;B. Firebase UID)</p>
+      <p><strong>Speicherung/Hosting</strong><br>Die Daten werden in Google Firebase (Cloud Firestore) in EU-Regionen gespeichert. Unterauftragsverarbeiter werden in der AVV/offenen Liste benannt.</p>
+      <p><strong>Rechtsgrundlagen</strong><br>Die Praxis stellt die Rechtsgrundlagen sicher (z.&nbsp;B. Art. 6 Abs. 1 lit. b DSGVO; bei Gesundheitsbezug regelmäßig Art. 9 Abs. 2 lit. h DSGVO i.V.m. berufsrechtlicher Verschwiegenheit).</p>
+      <p><strong>Datensicherheit</strong><br>HTTPS-Transport, Firestore Security Rules, Zugriffskontrolle, TOMs gemäß Art. 32 DSGVO.</p>
+      <p><strong>Drittlandübermittlungen</strong><br>Sofern Support/Telemetrie Dienste in Drittländern einbeziehen, werden geeignete Garantien (z.&nbsp;B. EU-US Data Privacy Framework bzw. EU-Standardvertragsklauseln) eingesetzt.</p>
+      <p><strong>Löschung</strong><br>Nach Vertragsende auf Wunsch Export/Löschung; automatische Löschung spätestens 30 Tage nach Vertragsende.</p>
+      <p style="color:#6b7280">Stand: 23.08.2025</p>
     </div>
   </div>
 
@@ -377,50 +417,39 @@
   <div id="datenschutzDemoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzDemoTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="datenschutzDemoModal" aria-label="Schließen">&times;</button>
-      <h2 id="datenschutzDemoTitle">Datenschutzerklärung (Demo-App)</h2>
-      <h3>1. Allgemeines</h3>
-      <p>Diese Demo-App verarbeitet personenbezogene Daten ausschließlich zur Demonstration der Kalenderfunktionen. Die App richtet sich ausschließlich an gewerbliche Nutzer gemäß § 14 BGB. Es findet keine Übermittlung an Server statt; die Verarbeitung erfolgt lokal auf Ihrem Endgerät.</p>
-      <h3>2. Zweck der Datenverarbeitung</h3>
-      <p>Die Datenverarbeitung erfolgt zur testweisen Verwaltung von Terminen, Kundeninformationen und Einnahmen innerhalb der App (Demozwecke).</p>
-      <h3>3. Verarbeitete Daten</h3>
+      <h2 id="datenschutzDemoTitle">Datenschutzhinweise (Demo-App)</h2>
+      <h3>1. Verantwortlicher & Zweck</h3>
+      <p>Verantwortlich: Daniel Michel (siehe Impressum). Verarbeitung ausschließlich zu Demozwecken lokal auf Ihrem Gerät.</p>
+      <h3>2. Verarbeitete Daten</h3>
       <ul>
         <li>Kundenname</li>
         <li>Name der Mitarbeiterin / des Mitarbeiters</li>
         <li>Behandlungsart</li>
         <li>Terminbeginn und -ende</li>
         <li>Preis</li>
-        <li>(optional) selbst gewähltes Logo sowie daraus abgeleitete Akzentfarbe für das App-Design</li>
-        <li>(optional) exportierte Dateien (ICS/PDF/CSV), die Sie bewusst erzeugen</li>
+        <li>(optional) Logo & abgeleitete Akzentfarbe</li>
+        <li>(optional) exportierte Dateien (ICS/PDF/CSV)</li>
       </ul>
-      <p><em>Hinweis:</em> Es werden keine Kontodaten, keine Firebase-UID und keine Analysedaten erhoben.</p>
-      <h3>4. Speicherung und Hosting</h3>
-      <p>Die Daten werden ausschließlich lokal auf Ihrem Gerät gespeichert:</p>
+      <p><em>Hinweis:</em> Keine Firebase-UID, keine Analysedaten, keine Serverübertragung.</p>
+      <h3>3. Speicherung</h3>
       <ul>
-        <li>App-Speicher/SharedPreferences (Termine, Einstellungen)</li>
-        <li>Geräte-Dateisystem (nur wenn Sie aktiv ICS/PDF/CSV exportieren; z. B. in den „Download“-Ordner)</li>
+        <li>App-Speicher (Termine, Einstellungen)</li>
+        <li>Dateisystem (nur bei aktivem Export)</li>
       </ul>
-      <p>Je nach Geräteeinstellung können diese lokalen Daten im Rahmen von Betriebssystem-Backups (z. B. Google-Drive-Backup) gesichert werden. Diese Backups werden vom Geräteanbieter verantwortet.</p>
-      <h3>5. Rechtsgrundlage</h3>
-      <p>Art. 6 Abs. 1 lit. b DSGVO (Durchführung der Demo-Nutzung/Testbereitstellung) und Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bereitstellung und Verbesserung einer funktionsfähigen Demo).</p>
-      <h3>6. Rechte der Nutzer</h3>
-      <p>Da die Daten ausschließlich lokal verarbeitet werden, können viele Rechte direkt durch Zurücksetzen oder Deinstallation der App ausgeübt werden (siehe Punkt 8).</p>
-      <h3>7. Datensicherheit</h3>
-      <p>Die App nutzt die Sicherheitsmechanismen des Betriebssystems (App-Sandbox, Geräte-Verschlüsselung). Es werden keine Daten an Dritte übertragen, sofern Sie nicht aktiv Dateien teilen.</p>
-      <p><strong>Berechtigungen:</strong></p>
+      <h3>4. Rechtsgrundlagen</h3>
+      <p>Art. 6 Abs. 1 lit. b DSGVO (Bereitstellung/Test) und ggf. lit. f (berechtigtes Interesse an einer funktionsfähigen Demo). Sie können durch Zurücksetzen/Deinstallation lokal gespeicherte Daten entfernen.</p>
+      <h3>5. Berechtigungen</h3>
       <ul>
-        <li>Fotos/Medien/Dateien (Logo auswählen)</li>
-        <li>Speicher/Dateizugriff (Export von ICS/PDF/CSV)</li>
+        <li>Dateizugriff (Export ICS/PDF/CSV)</li>
+        <li>Medien (Logo auswählen)</li>
       </ul>
-      <p>Diese Berechtigungen werden nur für die beschriebenen Zwecke verwendet.</p>
-      <h3>8. Löschung der Daten</h3>
+      <h3>6. Löschung</h3>
       <ul>
-        <li><strong>In-App:</strong> Über „App zurücksetzen“ werden alle lokal gespeicherten App-Daten gelöscht.</li>
-        <li><strong>Exportdateien:</strong> Von Ihnen erstellte Dateien (ICS/PDF/CSV) im Dateisystem müssen bei Bedarf manuell gelöscht werden.</li>
-        <li><strong>Deinstallation:</strong> Durch Deinstallation werden alle App-Daten auf dem Gerät entfernt (Exportdateien bleiben erhalten, bis Sie sie manuell löschen).</li>
-        <li><strong>Backups:</strong> Daten in Geräte-Backups unterliegen den Einstellungen Ihres Geräts/Anbieters.</li>
+        <li><strong>In-App:</strong> „App zurücksetzen“</li>
+        <li><strong>Exportdateien:</strong> manuell löschen</li>
+        <li><strong>Deinstallation:</strong> entfernt App-Daten (Exportdateien bleiben, bis Sie sie löschen)</li>
       </ul>
-      <h3>9. Änderungen</h3>
-      <p>Diese Datenschutzerklärung kann bei Bedarf angepasst werden.</p>
+      <p style="color:#6b7280">Stand: 23.08.2025</p>
     </div>
   </div>
 
@@ -456,13 +485,25 @@
           </div>
         </div>
 
+        <!-- B2B-Bestätigung -->
+        <div class="field" style="margin-top:.5rem;">
+          <label class="checkbox">
+            <input id="b2b" name="b2b" type="checkbox" required>
+            Ich handle als Unternehmer i.S.d. § 14 BGB.
+          </label>
+        </div>
+
         <div class="actions">
           <button type="button" class="ghost-btn" data-close="anfrageModal">Abbrechen</button>
           <button id="submitBtn" type="submit" class="primary-btn">Anfrage absenden</button>
         </div>
 
         <div id="formAlert" class="alert" role="status" aria-live="polite" style="display:none;"></div>
-        <p class="hint">Ihre Anfrage wird serverseitig versendet – Sie müssen kein E-Mail-Programm öffnen.</p>
+        <p class="hint">
+          Mit Absenden verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage
+          (Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO; ggf. lit. f).
+          Weitere Infos: <a href="#" data-open="datenschutzSiteModal">Datenschutz (Website)</a>.
+        </p>
       </form>
     </div>
   </div>
@@ -470,12 +511,13 @@
   <footer>
     &copy; 2025 Praxiskalender&nbsp;|&nbsp;
     <a href="#" data-open="impressumModal">Impressum</a>&nbsp;|&nbsp;
+    <a href="#" data-open="datenschutzSiteModal">Datenschutz (Website)</a>&nbsp;|&nbsp;
     <a href="#" data-open="datenschutzModal">Datenschutz (Vollversion)</a>&nbsp;|&nbsp;
     <a href="#" data-open="datenschutzDemoModal">Datenschutz (Demo)</a>
   </footer>
 
   <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" aria-modal="true" role="dialog">
+  <div id="lightbox" class="lightbox" aria-modal="true" role="dialog" aria-hidden="true">
     <button class="lb-close" aria-label="Schließen">&times;</button>
     <button class="lb-prev" aria-label="Vorheriges Bild">‹</button>
     <img alt="">
@@ -495,6 +537,38 @@
       },{threshold:.2});
       revealEls.forEach(el=>observer.observe(el));
 
+      // Focus-Trap für Modals (A11y)
+      const main = document.getElementById('appMain');
+      let lastTrigger = null;
+      function openModalById(id){
+        const el=document.getElementById(id);
+        if(!el) return;
+        lastTrigger = document.querySelector(`[data-open="${id}"]`) || document.activeElement;
+        el.classList.add('active'); el.setAttribute('aria-hidden','false');
+        main?.setAttribute('inert','');
+        const focusable = el.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+        focusable[0]?.focus();
+        function trap(e){
+          if(!el.classList.contains('active')) return;
+          if(e.key !== 'Tab') return;
+          const nodes = Array.from(focusable).filter(n=>!n.hasAttribute('disabled'));
+          if(nodes.length===0) return;
+          const first = nodes[0], last = nodes[nodes.length - 1];
+          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        }
+        el._trap = trap;
+        document.addEventListener('keydown', trap);
+      }
+      function closeModalById(id){
+        const el=document.getElementById(id);
+        if(!el) return;
+        el.classList.remove('active'); el.setAttribute('aria-hidden','true');
+        document.removeEventListener('keydown', el._trap || (()=>{}));
+        main?.removeAttribute('inert');
+        lastTrigger?.focus?.();
+      }
+
       // Modal Handling
       const openLinks=document.querySelectorAll('[data-open]');
       const closeEls=document.querySelectorAll('[data-close]');
@@ -502,19 +576,17 @@
         link.addEventListener('click',e=>{
           e.preventDefault();
           const id=e.currentTarget.getAttribute('data-open');
-          const el=document.getElementById(id);
-          if(el){ el.classList.add('active'); el.setAttribute('aria-hidden','false'); }
+          openModalById(id);
         });
       });
       closeEls.forEach(btn=>{
         btn.addEventListener('click',()=>{
           const id=btn.getAttribute('data-close');
-          const el=document.getElementById(id);
-          if(el){ el.classList.remove('active'); el.setAttribute('aria-hidden','true'); }
+          closeModalById(id);
         });
       });
       document.querySelectorAll('.modal-overlay').forEach(overlay=>{
-        overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); }});
+        overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); main?.removeAttribute('inert'); }});
       });
 
       // Lightbox
@@ -531,13 +603,18 @@
       function openAt(i){
         idx = Math.max(0, Math.min(i, shots.length - 1));
         const item = shots[idx];
-        lbImg.src = item.getAttribute('data-src') || item.querySelector('img').src;
+        const src = item.getAttribute('data-src') || item.querySelector('img')?.src;
+        if(!src){ return; }
+        lbImg.src = src;
+        lbImg.alt = item.querySelector('img')?.alt || 'Screenshot';
         lbCap.textContent = item.getAttribute('data-caption') || item.querySelector('.cap')?.textContent || '';
-        lb.classList.add('open'); updateArrows();
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden','false');
+        updateArrows();
       }
       function next(){ if (idx < shots.length - 1) openAt(idx + 1); }
       function prev(){ if (idx > 0) openAt(idx - 1); }
-      function closeLB(){ lb.classList.remove('open'); }
+      function closeLB(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); }
 
       shots.forEach((el,i)=> el.addEventListener('click',()=>openAt(i)));
       btnNext.addEventListener('click', next);
@@ -545,10 +622,11 @@
       btnClose.addEventListener('click', closeLB);
       lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
       document.addEventListener('keydown', e=>{
-        if(!lb.classList.contains('open')) return;
-        if(e.key==='Escape') closeLB();
-        if(e.key==='ArrowRight') next();
-        if(e.key==='ArrowLeft') prev();
+        if(lb.classList.contains('open')){
+          if(e.key==='Escape') closeLB();
+          if(e.key==='ArrowRight') next();
+          if(e.key==='ArrowLeft') prev();
+        }
       });
 
       // Mobile-Karussell beim ersten Item starten
@@ -559,9 +637,7 @@
         if(!mq.matches){ grid.scrollLeft = 0; return; }
         grid.classList.add('no-snap');
         grid.scrollLeft = 0;
-        requestAnimationFrame(()=> requestAnimationFrame(()=>{
-          grid.classList.remove('no-snap');
-        }));
+        requestAnimationFrame(()=> requestAnimationFrame(()=>{ grid.classList.remove('no-snap'); }));
       }
       function initCarouselStart(){
         if(!grid) return;
@@ -611,12 +687,19 @@
           vorname: form.vorname?.value?.trim() || '',
           nachname: form.nachname?.value?.trim() || '',
           email: form.email?.value?.trim() || '',
+          b2b: form.b2b?.checked ? 'true' : 'false',
           company: form.company?.value?.trim() || '' // honeypot
         };
 
         // einfache Client-Validierung
         if(!data.anrede || !data.vorname || !data.nachname || !data.email){
           form.reportValidity && form.reportValidity();
+          return;
+        }
+        if(data.b2b !== 'true'){
+          showAlert('Bitte bestätigen Sie, dass Sie als Unternehmer nach § 14 BGB handeln.', 'error');
+          const b2b = document.getElementById('b2b');
+          b2b?.focus();
           return;
         }
 
