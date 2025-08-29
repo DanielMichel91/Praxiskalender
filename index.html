@@ -22,7 +22,7 @@
     }
   </script>
 
-  <!-- Lokale Schrift (statt externer Google-Fonts) -->
+  <!-- Lokale Schrift -->
   <style>
     @font-face{
       font-family:'Inter';
@@ -34,26 +34,30 @@
     }
 
     :root{
-      /* Farben – moderner Neutral-Look */
-      --bg:#f7f7f9;               
-      --card-bg:#ffffff;
-      --text:#1f2937;             
-      --muted:#6b7280;
-
-      --brand:#2563eb;            
-      --brand-light:#3b82f6;      
+      /* Markenblau (auch Überschriften in Cards) */
+      --brand:#2563eb;          /* Blue 600 */
+      --brand-light:#3b82f6;    /* Blue 500 */
       --brand-600:#2563eb;
-      --accent:#14b8a6;           
+
+      /* Seitenhintergrund: oben dunkler → unten heller */
+      --page-bg-top:#1d4ed8;     /* Blue 700 (deutlich dunkler) */
+      --page-bg-mid:#60a5fa;     /* Blue 400 (Übergang) */
+      --page-bg-bottom:#eef6ff;  /* sehr hell am Seitenende */
+
+      /* Cards / Text */
+      --card-bg:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
 
       --brand-weak: rgba(37,99,235,.14);
       --brand-weak-hover: rgba(37,99,235,.28);
 
       --radius:16px;
-      --shadow:0 10px 30px rgba(0,0,0,.06);
-      --shadow-lg:0 20px 60px rgba(0,0,0,.12);
+      --shadow:0 10px 30px rgba(0,0,0,.10);
+      --shadow-lg:0 20px 60px rgba(0,0,0,.18);
 
-      /* Größeres Logo */
-      --logo-size:180px;
+      --logo-size:180px;       /* Header-Logo */
+      --demo-logo-size:96px;   /* Demo-Icon */
       --container:1100px;
     }
 
@@ -61,11 +65,14 @@
     html{scroll-behavior:smooth; overflow-anchor:none;}
     body{
       font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-      background:var(--bg); color:var(--text);
+      background: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-mid) 40%, var(--page-bg-bottom) 100%);
+      color:var(--text);
       line-height:1.65; -webkit-font-smoothing:antialiased;
+      min-height:100dvh;
     }
+    body.modal-open{ overflow:hidden; } /* Scroll sperren, wenn Modal offen */
 
-    /* Typo-Skala */
+    /* Typo */
     h1{font-weight:800; letter-spacing:-.01em; font-size:clamp(1.9rem, 4vw, 2.9rem); line-height:1.15;}
     h2{color:var(--brand); font-size:clamp(1.35rem, 2.2vw, 1.85rem); margin-bottom:1.1rem; font-weight:700;}
     p{font-size:clamp(.98rem, 1.2vw, 1.05rem);}
@@ -74,42 +81,36 @@
     [data-reveal].is-visible{opacity:1;transform:none;}
 
     :focus-visible{
-      outline:3px solid var(--accent);
+      outline:3px solid var(--brand-light);
       outline-offset:3px;
       border-radius:10px;
     }
 
-    /* Header / Hero */
+    /* Header (nutzt den Seitenverlauf als Hintergrund) */
     header{
-      background:none; position:relative; overflow:hidden; text-align:center; color:#fff;
-      padding:0 1rem .75rem;
+      background:transparent;
+      text-align:center;
+      padding:28px 1rem 12px;
+      color:#fff;
     }
-    header::before, header::after{
-      content:""; position:absolute; left:0; top:0; width:100%;
-      height:220px; pointer-events:none; z-index:0;
-    }
-    header::before{
-      background:linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
-      box-shadow:inset 0 -30px 60px rgba(0,0,0,.08);
-    }
-    header::after{ background:url('hero-wave.svg') bottom/cover no-repeat; opacity:.9; }
-
     .header-content{
-      position:relative; z-index:1;
       display:flex; flex-direction:row; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap;
-      max-width:var(--container); margin:0 auto; padding-top:22px;
+      max-width:var(--container); margin:0 auto;
     }
-    /* Logo proportional (Fix gegen Verzerrung) */
     .header-content img{
       height: var(--logo-size);
       width: auto;
-      transform: translateY(-4px);
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,.18));
+      transform: translateY(-2px);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
     }
     .header-text{ text-align:left; }
-    .header-text p{opacity:.97; margin-top:.1rem;}
+    .header-text h1,
+    .header-text p{
+      color:#ffffff;
+      text-shadow:0 2px 6px rgba(0,0,0,.28); /* gute Lesbarkeit auf dunklerem Blau */
+    }
 
-    /* Layout */
+    /* Layout – WEISSE CARDS auf blauem Verlauf */
     main{margin-top:0;}
     .container{
       max-width:var(--container); margin:0 auto 3rem; padding:2.2rem 1.1rem;
@@ -131,19 +132,17 @@
     /* CTA */
     .cta-copy p{margin:0; color:#1f2937;}
     .demo-row{ margin-top:1.1rem; display:inline-flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center; }
-    .demo-logo{width:var(--logo-size); height:auto;}
+    .demo-logo{ width:var(--demo-logo-size); height:auto; }
     .download-btn{
-      display:inline-block; text-decoration:none; font-weight:700; font-size:1.125rem;
-      padding:.95rem 2rem; border-radius:999px; transition:transform .2s ease, box-shadow .2s ease, background .25s ease;
-      background:#fff; color:var(--brand-600); border:2px solid var(--brand);
-      box-shadow:0 6px 16px rgba(0,0,0,.06);
+      display:inline-block; text-decoration:none; font-weight:700; font-size:1.06rem;
+      padding:.9rem 1.6rem; border-radius:999px;
+      background:var(--brand); color:#fff; border:2px solid var(--brand);
+      transition:transform .2s ease, box-shadow .2s ease, background .25s ease;
     }
-    .download-btn:hover{background:var(--brand-light); color:#fff; transform:translateY(-1px); box-shadow:0 10px 22px rgba(0,0,0,.12);}
+    .download-btn:hover{ background:var(--brand-light); transform:translateY(-1px); box-shadow:0 10px 22px rgba(37,99,235,.18); }
 
-    .band{
-      background:linear-gradient(180deg, rgba(37,99,235,.06) 0%, rgba(37,99,235,0) 100%);
-      padding: .5rem 0 0;
-    }
+    /* Keine zusätzlichen Hintergrund-Akzente */
+    .band{ background:none; padding:0; }
 
     /* Gallery */
     .gallery .subtitle{ margin-top:-.35rem; color:var(--muted); }
@@ -168,7 +167,7 @@
     .lightbox{
       position:fixed; inset:0; padding:3vh 3vw; background:rgba(0,0,0,.88);
       display:flex; align-items:center; justify-content:center;
-      visibility:hidden; opacity:0; transition:opacity .25s ease, visibility .25s ease; z-index:1000;
+      visibility:hidden; opacity:0; transition:opacity .25s ease, visibility .25s ease; z-index:3500;
     }
     .lightbox.open{ visibility:visible; opacity:1; }
     .lightbox img{
@@ -181,8 +180,7 @@
       font-size:.95rem; max-width:92vw; text-align:center;
     }
     .lightbox .lb-close,
-    .lightbox .lb-prev,
-    .lightbox .lb-next{
+    .lightbox .lb-prev, .lightbox .lb-next{
       background:transparent; border:0; color:#fff; cursor:pointer; opacity:.95;
     }
     .lightbox .lb-close{ position:absolute; top:10px; right:14px; font-size:2rem; line-height:1; }
@@ -192,7 +190,7 @@
     .lightbox .lb-prev[disabled], .lightbox .lb-next[disabled]{ opacity:.35; cursor:default; pointer-events:none; }
 
     /* Pricing */
-    .pricing{ text-align:center; }
+    .pricing{text-align:center;}
     .price-grid{ display:flex; gap:1rem; justify-content:center; align-items:stretch; flex-wrap:wrap; margin-top:.75rem; }
     .price-card{
       background:#fff; border:2px solid var(--brand-weak); border-radius:16px; padding:1.2rem 1.4rem; min-width:240px;
@@ -201,9 +199,9 @@
     .price-card:hover{ border-color:var(--brand-weak-hover); transform:translateY(-2px); box-shadow:var(--shadow-lg); }
     .price-card .price{ font-size:2rem; font-weight:800; color:var(--brand-600); }
     .price-card .price span{ font-size:1rem; font-weight:600; color:#4b5563; margin-left:.25rem; }
-    .price-card.highlight{ border-color:var(--accent); }
+    .price-card.highlight{ border-color:var(--brand); }
     .price-card .badge{
-      position:absolute; top:-10px; right:-10px; background:var(--accent); color:#fff; font-weight:800; font-size:.85rem;
+      position:absolute; top:-10px; right:-10px; background:var(--brand); color:#fff; font-weight:800; font-size:.85rem;
       padding:.25rem .55rem; border-radius:999px; box-shadow:0 6px 16px rgba(0,0,0,.15);
     }
     .tax-note{ margin-top:.85rem; color:var(--muted); font-size:.92rem; }
@@ -237,8 +235,11 @@
     .alert.success{ color:#0a7a3d; }
     .alert.error{ color:#b91c1c; }
 
-    /* Modals */
-    .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:1100; }
+    /* --- MODALS --- (über Footer, hoher z-index) */
+    .modal-overlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.6);
+      display:none; align-items:center; justify-content:center; z-index:4000;
+    }
     .modal-overlay.active{ display:flex; }
     .modal{
       background:#fff; width:min(90%,700px); max-height:80vh; overflow:auto; border-radius:18px;
@@ -250,12 +251,16 @@
     .modal p{margin-bottom:1rem; font-size:.95rem; white-space:pre-line;}
     .modal ul{margin:.25rem 0 1rem 1.25rem;}
 
-    footer{text-align:center; padding:2rem 1rem; font-size:.92rem; color:#888;}
-    footer a{color:var(--brand); text-decoration:none; margin:0 .25rem; font-weight:700;}
+    /* Footer (wie zuvor) */
+    footer{
+      background: var(--card-bg);
+      text-align:center; padding:2rem 1rem; font-size:.92rem; color:#888;
+    }
+    footer a{ color:var(--brand); text-decoration:none; margin:0 .25rem; font-weight:700; }
+    footer a:hover{ text-decoration:underline; }
 
     /* Tablet */
     @media (max-width:900px){
-      header::before, header::after{ height:200px; }
       .screenshot-grid{ grid-template-columns:repeat(2, 1fr); }
       .screenshot img{ height:180px; }
       .screenshot.wide img{ height:140px; }
@@ -264,17 +269,13 @@
 
     /* Mobile */
     @media(max-width:650px){
-      /* Logo auf Mobile etwas kleiner halten */
-      :root{ --logo-size:130px; }
+      :root{ --logo-size:130px; --demo-logo-size:88px; }
 
       .header-content{ gap:.2rem; }
       .header-text{ text-align:center; }
       .header-text p{ font-size:1.02rem; }
-      .header-content img{ transform:translateY(24px); }
-      .demo-logo{width:110px;}
       .download-btn{width:100%;}
       .demo-row{ justify-content:center;}
-      header::before, header::after{ height:300px; }
 
       .screenshot-grid{
         display:flex; gap:.75rem; overflow-x:auto; padding-inline:0;
@@ -304,7 +305,6 @@
 <body>
   <header>
     <div class="header-content" data-reveal>
-      <!-- Proportional (keine width/height-Attribute) -->
       <img src="Logo white.png" alt="Kalender-App Logo" decoding="async" fetchpriority="high">
       <div class="header-text">
         <h1>Individuell &amp; effizient</h1>
@@ -334,7 +334,7 @@
           <p>Erleben Sie alle Funktionen live – ohne Registrierung und Verpflichtungen.</p>
         </div>
         <div class="demo-row">
-          <img src="demo-logo.png" alt="Demo App Symbol" class="demo-logo" width="140" height="140">
+          <img src="demo-logo.png" alt="Demo App Symbol" class="demo-logo">
           <a href="###DEMO_LINK###" class="download-btn" id="demoButton">Demo herunterladen</a>
         </div>
       </section>
@@ -396,6 +396,8 @@
     </div>
   </main>
 
+  <!-- ======= MODALS ======= -->
+
   <!-- Impressum Modal -->
   <div id="impressumModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="impressumTitle" aria-hidden="true">
     <div class="modal">
@@ -404,9 +406,6 @@
       <p><strong>Anbieter</strong><br>Daniel Michel<br>Asternweg 1<br>32339 Espelkamp</p>
       <p><strong>Kontakt</strong><br>E-Mail: <a href="mailto:michel.daniel@gmx.net">michel.daniel@gmx.net</a><br>(oder über das Anfrageformular)</p>
       <p><strong>Verantwortlich i.S.d. § 18 Abs. 2 MStV</strong><br>Daniel Michel</p>
-      <!-- Optional: nur einfügen, wenn vorhanden
-      <p><strong>USt-ID</strong>: DE…</p>
-      -->
       <p><strong>Geltungsbereich</strong><br>Diese Angaben gelten für die Website praxiskalender.de und die zugehörige Kalender-App.</p>
     </div>
   </div>
@@ -492,7 +491,7 @@
       <button class="modal-close" data-close="anfrageModal" aria-label="Schließen">&times;</button>
       <h2 id="anfrageTitle">Vollversion anfragen</h2>
       <form id="anfrageForm" class="form" novalidate>
-        <!-- Honeypot (Bots füllen das aus) -->
+        <!-- Honeypot -->
         <input type="text" name="company" autocomplete="organization" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
 
         <div class="field">
@@ -518,7 +517,6 @@
           </div>
         </div>
 
-        <!-- B2B-Bestätigung -->
         <div class="field" style="margin-top:.5rem;">
           <label class="checkbox">
             <input id="b2b" name="b2b" type="checkbox" required>
@@ -540,6 +538,7 @@
       </form>
     </div>
   </div>
+  <!-- ======= /MODALS ======= -->
 
   <footer>
     &copy; 2025 Praxiskalender&nbsp;|&nbsp;
@@ -570,7 +569,7 @@
       },{threshold:.2});
       revealEls.forEach(el=>observer.observe(el));
 
-      // Focus-Trap für Modals (A11y)
+      // Focus-Trap & Body-Scroll sperren
       const main = document.getElementById('appMain');
       let lastTrigger = null;
       function openModalById(id){
@@ -578,6 +577,7 @@
         if(!el) return;
         lastTrigger = document.querySelector(`[data-open="${id}"]`) || document.activeElement;
         el.classList.add('active'); el.setAttribute('aria-hidden','false');
+        document.body.classList.add('modal-open');
         main?.setAttribute('inert','');
         const focusable = el.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
         focusable[0]?.focus();
@@ -599,6 +599,7 @@
         el.classList.remove('active'); el.setAttribute('aria-hidden','true');
         document.removeEventListener('keydown', el._trap || (()=>{}));
         main?.removeAttribute('inert');
+        document.body.classList.remove('modal-open');
         lastTrigger?.focus?.();
       }
 
@@ -619,7 +620,7 @@
         });
       });
       document.querySelectorAll('.modal-overlay').forEach(overlay=>{
-        overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); main?.removeAttribute('inert'); }});
+        overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); main?.removeAttribute('inert'); document.body.classList.remove('modal-open'); }});
       });
 
       // Lightbox
@@ -721,7 +722,7 @@
           nachname: form.nachname?.value?.trim() || '',
           email: form.email?.value?.trim() || '',
           b2b: form.b2b?.checked ? 'true' : 'false',
-          company: form.company?.value?.trim() || '' // honeypot
+          company: form.company?.value?.trim() || ''
         };
 
         if(!data.anrede || !data.vorname || !data.nachname || !data.email){
@@ -730,8 +731,7 @@
         }
         if(data.b2b !== 'true'){
           showAlert('Bitte bestätigen Sie, dass Sie als Unternehmer nach § 14 BGB handeln.', 'error');
-          const b2b = document.getElementById('b2b');
-          b2b?.focus();
+          document.getElementById('b2b')?.focus();
           return;
         }
 
