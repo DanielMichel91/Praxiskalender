@@ -489,26 +489,21 @@
     </div>
   </div>
 
-<!-- Anfrage-Modal (NEU) -->
-<div id="anfrageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="anfrageTitle" aria-hidden="true">
-  <div class="modal">
-    <button class="modal-close" data-close="anfrageModal" aria-label="Schließen">&times;</button>
-    <h2 id="anfrageTitle">Vollversion anfragen</h2>
+  <!-- Anfrage-Modal -->
+  <div id="anfrageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="anfrageTitle" aria-hidden="true">
+    <div class="modal">
+      <button class="modal-close" data-close="anfrageModal" aria-label="Schließen">&times;</button>
+      <h2 id="anfrageTitle">Vollversion anfragen</h2>
+      <form id="anfrageForm" class="form" novalidate>
+        <!-- Honeypot -->
+        <input type="text" name="company" autocomplete="organization" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
 
-    <form id="anfrageForm" class="form" novalidate enctype="multipart/form-data">
-      <!-- Honeypot -->
-      <input type="text" name="company" autocomplete="organization" tabindex="-1" aria-hidden="true"
-             style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
-
-      <!-- 1) Kontaktperson -->
-      <fieldset class="field" aria-labelledby="legend-kontakt">
-        <legend id="legend-kontakt" style="font-weight:800;margin-bottom:.5rem;">Kontakt</legend>
-
-        <label for="anrede">Anrede</label>
-        <div class="radio-group" id="anrede" role="radiogroup" aria-label="Anrede">
-          <label><input type="radio" name="anrede" value="Herr" required> Herr</label>
-          <label><input type="radio" name="anrede" value="Frau" required> Frau</label>
-          <label><input type="radio" name="anrede" value="Divers" required> Divers</label>
+        <div class="field">
+          <label for="anrede">Anrede</label>
+          <div class="radio-group" id="anrede" role="radiogroup" aria-label="Anrede">
+            <label><input type="radio" name="anrede" value="Herr" required> Herr</label>
+            <label><input type="radio" name="anrede" value="Frau" required> Frau</label>
+          </div>
         </div>
 
         <div class="form-grid" style="margin-top:1rem;">
@@ -525,198 +520,28 @@
             <input id="email" name="email" type="email" autocomplete="email" required placeholder="name@beispiel.de" maxlength="120">
           </div>
         </div>
-      </fieldset>
 
-      <!-- 2) Unternehmensdaten (aus der Checkliste) -->
-      <fieldset class="field" aria-labelledby="legend-unternehmen" style="margin-top:1rem;">
-        <legend id="legend-unternehmen" style="font-weight:800;margin-bottom:.5rem;">Unternehmensdaten</legend>
-        <div class="form-grid">
-          <div class="field" style="grid-column:1/-1;">
-            <label for="company_name">Name des Unternehmens</label>
-            <input id="company_name" name="company_name" type="text" required placeholder="Praxis XY / Firma" maxlength="120" autocomplete="organization">
-          </div>
-          <div class="field" style="grid-column:1/-1;">
-            <label for="company_address">Anschrift</label>
-            <textarea id="company_address" name="company_address" required placeholder="Straße Hausnr., PLZ Ort" rows="2" style="padding:.75rem .9rem; border-radius:12px; border:2px solid var(--brand-weak);"></textarea>
-          </div>
+        <div class="field" style="margin-top:.5rem;">
+          <label class="checkbox">
+            <input id="b2b" name="b2b" type="checkbox" required>
+            Ich handle als Unternehmer i.S.d. § 14 BGB.
+          </label>
         </div>
-      </fieldset>
 
-      <!-- 3) App-Inhalte (aus der Checkliste) -->
-      <fieldset class="field" aria-labelledby="legend-app" style="margin-top:1rem;">
-        <legend id="legend-app" style="font-weight:800;margin-bottom:.5rem;">App-Inhalte</legend>
-
-        <div class="form-grid">
-          <div class="field" style="grid-column:1/-1;">
-            <label for="app_title">Praxisname (App-Titel)</label>
-            <input id="app_title" name="app_title" type="text" required placeholder="z. B. Praxis Mustermann" maxlength="120">
-          </div>
-
-          <div class="field">
-            <label for="practitioners">Behandler:innen (Name/Kürzel)</label>
-            <textarea id="practitioners" name="practitioners" placeholder="z. B. Dr. A (A), Dr. B (B)" rows="2" style="padding:.75rem .9rem; border-radius:12px; border:2px solid var(--brand-weak);"></textarea>
-          </div>
-
-          <div class="field">
-            <label for="users_choice">Nutzeranzahl</label>
-            <div class="radio-group" id="users_choice" role="radiogroup" aria-label="Nutzeranzahl">
-              <label><input type="radio" name="users_type" value="single" checked> 1&nbsp;Person</label>
-              <label><input type="radio" name="users_type" value="team"> Team</label>
-              <input id="team_size" name="team_size" type="number" inputmode="numeric" min="2" step="1"
-                     placeholder="Teamgröße" aria-label="Teamgröße"
-                     style="max-width:140px; display:none;">
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="treatments_file">Behandlungen (Name&nbsp;|&nbsp;Dauer&nbsp;|&nbsp;Preis) – Datei anhängen</label>
-            <input id="treatments_file" name="treatments_file" type="file"
-                   accept=".csv,.pdf,.xls,.xlsx,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-            <p class="hint">CSV, PDF oder Excel. Optional – alternativ später nachreichen.</p>
-          </div>
-
-          <div class="field">
-            <label for="logo_file">Logo (PNG/JPG) – Datei anhängen</label>
-            <input id="logo_file" name="logo_file" type="file" accept="image/png,image/jpeg">
-            <p class="hint">Optional. Wird für die App-Gestaltung genutzt.</p>
-          </div>
-
-          <div class="field" style="grid-column:1/-1;">
-            <label for="google_account">Google-Mailadresse (Play-Store-Zugriff)</label>
-            <input id="google_account" name="google_account" type="email" placeholder="ihr.konto@gmail.com" maxlength="120" autocomplete="email">
-          </div>
+        <div class="actions">
+          <button type="button" class="ghost-btn" data-close="anfrageModal">Abbrechen</button>
+          <button id="submitBtn" type="submit" class="primary-btn">Anfrage absenden</button>
         </div>
-      </fieldset>
 
-      <!-- B2B-Bestätigung -->
-      <div class="field" style="margin-top:.75rem;">
-        <label class="checkbox">
-          <input id="b2b" name="b2b" type="checkbox" required>
-          Ich handle als Unternehmer i.S.d. §&nbsp;14&nbsp;BGB.
-        </label>
-      </div>
-
-      <div class="actions">
-        <button type="button" class="ghost-btn" data-close="anfrageModal">Abbrechen</button>
-        <button id="submitBtn" type="submit" class="primary-btn">Anfrage absenden</button>
-      </div>
-
-      <div id="formAlert" class="alert" role="status" aria-live="polite" style="display:none;"></div>
-      <p class="hint">
-        Mit Absenden verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage
-        (Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO; ggf. lit. f).
-        Weitere Infos: <a href="#" data-open="datenschutzSiteModal">Datenschutz (Website)</a>.
-      </p>
-    </form>
+        <div id="formAlert" class="alert" role="status" aria-live="polite" style="display:none;"></div>
+        <p class="hint">
+          Mit Absenden verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage
+          (Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO; ggf. lit. f).
+          Weitere Infos: <a href="#" data-open="datenschutzSiteModal">Datenschutz (Website)</a>.
+        </p>
+      </form>
+    </div>
   </div>
-</div>
-
-<script>
-  // === Zusatz-Logik NUTZERANZAHL (Teamgröße ein-/ausblenden) ===
-  (function(){
-    const form = document.getElementById('anfrageForm');
-    if(!form) return;
-    const radios = form.querySelectorAll('input[name="users_type"]');
-    const teamSize = form.querySelector('#team_size');
-
-    function syncTeam(){
-      const isTeam = form.users_type?.value === 'team';
-      if(isTeam){
-        teamSize.style.display = 'inline-block';
-        teamSize.required = true;
-        teamSize.focus();
-      }else{
-        teamSize.style.display = 'none';
-        teamSize.required = false;
-        teamSize.value = '';
-      }
-    }
-    radios.forEach(r => r.addEventListener('change', syncTeam));
-    syncTeam();
-  })();
-
-  // === Submit mit FormData (Datei-Uploads) – ersetzt deinen alten Submit-Handler ===
-  (function(){
-    const anfrageModal = document.getElementById('anfrageModal');
-    const form        = document.getElementById('anfrageForm');
-    const alertEl     = document.getElementById('formAlert');
-    const submitBtn   = document.getElementById('submitBtn');
-
-    function showAlert(msg, type){
-      alertEl.textContent = msg;
-      alertEl.className   = 'alert ' + (type || '');
-      alertEl.style.display = 'block';
-    }
-    function clearAlert(){
-      alertEl.textContent = '';
-      alertEl.className   = 'alert';
-      alertEl.style.display = 'none';
-    }
-
-    form?.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      clearAlert();
-
-      // Client-Checks
-      if(!form.checkValidity()){
-        form.reportValidity?.();
-        return;
-      }
-      // Spezielle Team-Validierung
-      if(form.users_type?.value === 'team' && (!form.team_size?.value || Number(form.team_size.value) < 2)){
-        showAlert('Bitte die Teamgröße (mind. 2) angeben.', 'error');
-        form.team_size?.focus();
-        return;
-      }
-      if(!form.b2b?.checked){
-        showAlert('Bitte bestätigen Sie, dass Sie als Unternehmer nach § 14 BGB handeln.', 'error');
-        form.b2b?.focus();
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Senden...';
-
-      try{
-        const fd = new FormData(form);
-
-        // Optional: Normalisierte Flags passend zur Checkliste
-        fd.set('users_single', fd.get('users_type') === 'single' ? 'true' : 'false');
-        fd.set('users_team',   fd.get('users_type') === 'team'   ? 'true' : 'false');
-
-        // Hinweis: KEIN Content-Type setzen – Browser setzt Boundary für multipart automatisch.
-        const res  = await fetch('/api/send-request', {
-          method: 'POST',
-          body: fd
-        });
-
-        let json = {};
-        try { json = await res.json(); } catch(_){}
-
-        if(!res.ok){
-          throw new Error(json?.error || 'Senden fehlgeschlagen.');
-        }
-
-        showAlert('Danke! Ihre Anfrage wurde erfolgreich versendet.', 'success');
-        form.reset();
-
-        // Modal nach kurzer Zeit schließen
-        setTimeout(()=>{
-          anfrageModal?.classList.remove('active');
-          anfrageModal?.setAttribute('aria-hidden','true');
-          clearAlert();
-        }, 2000);
-
-      }catch(err){
-        showAlert(err?.message || 'Es ist ein Fehler aufgetreten.', 'error');
-      }finally{
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Anfrage absenden';
-      }
-    });
-  })();
-</script>
-
   <!-- ======= /MODALS ======= -->
 
   <footer>
