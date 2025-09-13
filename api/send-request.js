@@ -1,5 +1,9 @@
 // /api/send-request.js  (ESM: package.json hat "type": "module")
 import sgMail from '@sendgrid/mail';
+import Busboy from 'busboy';
+
+/* ---------- Next/Vercel: Bodyparser aus ---------- */
+export const config = { api: { bodyParser: false } };
 
 /* ---------- Helpers ---------- */
 function sendJson(res, status, payload) {
@@ -11,32 +15,49 @@ function sendJson(res, status, payload) {
   res.end(JSON.stringify(payload));
 }
 
-async function readJson(req) {
-  const chunks = [];
-  for await (const c of req) chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c));
-  const raw = Buffer.concat(chunks).toString('utf8');
-  try { return raw ? JSON.parse(raw) : {}; } catch { return null; }
-}
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 const esc = (s = '') =>
-  String(s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+           .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
 const ensureArray = (val) => {
   if (Array.isArray(val)) return val.map(v => String(v).trim()).filter(Boolean);
-  if (typeof val === 'string') {
-    return val.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
-  }
+  if (typeof val === 'string') return val.split(/[\n,;]+/).map(s => s.trim()).filter(Boolean);
   return [];
 };
 
-const ul = (items) => items.length
-  ? `<ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`
-  : '<p>–</p>';
+const ul = (items) => items.length ? `<ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>` : '<p>–</p>';
+
+/* ---------- multipart Parser (Busboy) ---------- */
+function parseMultipart(req) {
+  return new Promise((resolve, reject) => {
+    const bb = Busboy({
+      headers: req.headers,
+      limits: { fileSize: 10 * 1024 * 1024, files: 5, fields: 50 } // 10MB/Datei
+    });
+
+    const fields = {};
+    const files = {};        // key -> { filename, mimeType, data: Buffer }
+    const fileBuffers = {};
+
+    bb.on('field', (name, val) => { fields[name] = val; });
+
+    bb.on('file', (name, file, info) => {
+      const { filename, mimeType } = info;
+      fileBuffers[name] = [];
+      file.on('data', (chunk) => fileBuffers[name].push(chunk));
+      file.on('limit', () => reject(Object.assign(new Error('Datei zu groß'), { status: 413 })));
+      file.on('end', () => {
+        const data = Buffer.concat(fileBuffers[name] || []);
+        files[name] = { filename, mimeType, data };
+      });
+    });
+
+    bb.on('error', reject);
+    bb.on('finish', () => resolve({ fields, files }));
+    req.pipe(bb);
+  });
+}
 
 /* ---------- Handler ---------- */
 export default async function handler(req, res) {
@@ -46,45 +67,43 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = await readJson(req);
-    if (!body) return sendJson(res, 400, { ok: false, error: 'Ungültiges JSON.' });
+    const { fields, files } = await parseMultipart(req);
 
-    // Honeypot (Bots füllen das i.d.R. aus) → stillschweigend „OK“, aber nichts senden
-    if (body.company && String(body.company).trim() !== '') {
+    // Honeypot
+    if (fields.company && String(fields.company).trim() !== '') {
       return sendJson(res, 200, { ok: true });
     }
 
-    /* -------- Felder aus Body normalisieren -------- */
-    const anrede            = String(body.anrede || '').trim();
-    const vorname           = String(body.vorname || '').trim();
-    const nachname          = String(body.nachname || '').trim();
-    const email             = String(body.email || '').trim();
+    /* ------ Felder normalisieren ------ */
+    const anrede          = String(fields.anrede || '').trim();
+    const vorname         = String(fields.vorname || '').trim();
+    const nachname        = String(fields.nachname || '').trim();
+    const email           = String(fields.email || '').trim();
 
-    const company_name      = String(body.company_name || '').trim();
-    const company_address   = String(body.company_address || '').trim();
+    const company_name    = String(fields.company_name || '').trim();
+    const company_address = String(fields.company_address || '').trim();
 
-    const app_title         = String(body.app_title || '').trim();
-    const play_emails       = ensureArray(body.play_emails);
-    const behandlers        = ensureArray(body.behandlers);
+    const app_title       = String(fields.app_title || '').trim();
+    const play_emails     = ensureArray(fields.play_emails);
+    const behandlers      = ensureArray(fields.behandlers);
 
-    const nutzer_typ        = (body.nutzer_typ === 'team' ? 'team' : 'single');
-    const team_count        = nutzer_typ === 'team'
-                                ? Number.parseInt(body.team_count, 10) || 0
-                                : 1;
+    const nutzer_typ      = (fields.nutzer_typ === 'team' ? 'team' : 'single');
+    const team_count      = nutzer_typ === 'team' ? (parseInt(fields.team_count, 10) || 0) : 1;
 
-    const treatments_file_name = String(body.treatments_file_name || '').trim(); // Name reicht (kein Anhang)
-    const logo_file_name       = String(body.logo_file_name || '').trim();
+    const b2b = ['true', 'on', '1', 'yes'].includes(String(fields.b2b || '').toLowerCase());
 
-    const b2b = String(body.b2b || '').toLowerCase() === 'true';
+    // Uploads (pflicht)
+    const treatmentsFile  = files.treatments_file;
+    const logoFile        = files.logo_file;
 
-    /* -------- Validierung -------- */
+    /* ------ Validierung ------ */
     const missing = [];
     const invalid = [];
 
-    if (!anrede)     missing.push('Anrede');
-    if (!vorname)    missing.push('Vorname');
-    if (!nachname)   missing.push('Nachname');
-    if (!email)      missing.push('E-Mail');
+    if (!anrede)  missing.push('Anrede');
+    if (!vorname) missing.push('Vorname');
+    if (!nachname)missing.push('Nachname');
+    if (!email)   missing.push('E-Mail');
     if (email && !EMAIL_RE.test(email)) invalid.push('E-Mail (Format)');
 
     if (!company_name)    missing.push('Unternehmensname');
@@ -93,22 +112,31 @@ export default async function handler(req, res) {
     if (!app_title)       missing.push('Praxisname (App-Titel)');
 
     if (play_emails.length === 0) missing.push('Google-Mailadressen (Play-Store-Zugriff)');
-    if (play_emails.length > 0) {
-      const bad = play_emails.filter(e => !EMAIL_RE.test(e));
-      if (bad.length) invalid.push(`Google-Mailadressen ungültig: ${bad.join(', ')}`);
-    }
+    const badMails = play_emails.filter(e => !EMAIL_RE.test(e));
+    if (badMails.length) invalid.push(`Google-Mailadressen ungültig: ${badMails.join(', ')}`);
 
     if (behandlers.length === 0) missing.push('Behandler:innen (Name/Kürzel)');
 
-    if (!nutzer_typ)      missing.push('Nutzeranzahl');
-    if (nutzer_typ === 'team' && (!team_count || team_count < 2)) {
-      invalid.push('Teamgröße (mind. 2)');
+    if (!nutzer_typ) missing.push('Nutzeranzahl');
+    if (nutzer_typ === 'team' && (!team_count || team_count < 2)) invalid.push('Teamgröße (mind. 2)');
+
+    if (!treatmentsFile)  missing.push('Behandlungen – Datei');
+    if (!logoFile)        missing.push('Logo – Datei');
+
+    const okTreatments = [
+      'text/csv', 'application/pdf',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'image/png', 'image/jpeg'
+    ];
+    const okLogos = ['image/png', 'image/jpeg'];
+
+    if (treatmentsFile && !okTreatments.includes(treatmentsFile.mimeType)) {
+      invalid.push('Behandlungen – Dateityp (CSV/PDF/Excel/PNG/JPG)');
     }
-
-    // Dateien sind optional – wenn du „Behandlungen/Logo“ verpflichtend willst: nächste zwei Zeilen einkommentieren
-    if (!treatments_file_name) missing.push('Behandlungen – Datei');
-    if (!logo_file_name)       missing.push('Logo – Datei');
-
+    if (logoFile && !okLogos.includes(logoFile.mimeType)) {
+      invalid.push('Logo – Dateityp (PNG/JPG)');
+    }
     if (!b2b) invalid.push('B2B-Bestätigung (§14 BGB)');
 
     if (missing.length || invalid.length) {
@@ -119,18 +147,15 @@ export default async function handler(req, res) {
       return sendJson(res, 400, { ok: false, error: message || 'Validierung fehlgeschlagen.' });
     }
 
-    /* -------- SendGrid vorbereiten -------- */
+    /* ------ SendGrid vorbereiten ------ */
     const apiKey = process.env.SENDGRID_API_KEY;
-    const from   = process.env.SENDGRID_FROM; // verifizierte Absenderadresse (Single Sender)
+    const from   = process.env.SENDGRID_FROM;
     const to     = process.env.SENDGRID_TO || 'michel.daniel@gmx.net';
-
     if (!apiKey || !from) {
       return sendJson(res, 500, { ok: false, error: 'Server nicht konfiguriert (SENDGRID_API_KEY oder SENDGRID_FROM fehlt).' });
     }
-
     sgMail.setApiKey(apiKey);
 
-    /* -------- Mailinhalt aufbauen -------- */
     const subject = 'Anfrage Vollversion – Praxiskalender';
 
     const text =
@@ -155,9 +180,9 @@ ${behandlers.map(b => `- ${b}`).join('\n') || '-'}
 Play-Store-Zugriff (Google-Konten):
 ${play_emails.map(m => `- ${m}`).join('\n') || '-'}
 
-[Uploads]
-Behandlungen: ${treatments_file_name || '-'}
-Logo:         ${logo_file_name || '-'}
+[Anhänge]
+Behandlungen: ${treatmentsFile?.filename || '-'}
+Logo:         ${logoFile?.filename || '-'}
 
 B2B bestätigt: ${b2b ? 'Ja' : 'Nein'}
 `;
@@ -185,27 +210,40 @@ B2B bestätigt: ${b2b ? 'Ja' : 'Nein'}
   <h4>Play-Store-Zugriff (Google-Konten)</h4>
   ${ul(play_emails)}
 
-  <h3>Uploads</h3>
-  <p>Behandlungen: ${esc(treatments_file_name || '-')}<br>
-  Logo: ${esc(logo_file_name || '-')}</p>
+  <h4>Anhänge</h4>
+  <ul>
+    <li>Behandlungen: ${esc(treatmentsFile?.filename || '-')}</li>
+    <li>Logo: ${esc(logoFile?.filename || '-')}</li>
+  </ul>
 
   <p><strong>B2B bestätigt:</strong> ${b2b ? 'Ja' : 'Nein'}</p>
 </div>`;
 
-    const msg = {
-      to,
-      from,            // verifizierter Absender
-      replyTo: email,  // Antworten gehen an die anfragende Person
-      subject,
-      text,
-      html
-    };
+    const attachments = [];
+    if (treatmentsFile) {
+      attachments.push({
+        content: treatmentsFile.data.toString('base64'),
+        filename: treatmentsFile.filename || 'behandlungen',
+        type: treatmentsFile.mimeType || 'application/octet-stream',
+        disposition: 'attachment'
+      });
+    }
+    if (logoFile) {
+      attachments.push({
+        content: logoFile.data.toString('base64'),
+        filename: logoFile.filename || 'logo',
+        type: logoFile.mimeType || 'application/octet-stream',
+        disposition: 'attachment'
+      });
+    }
 
+    const msg = { to, from, replyTo: email, subject, text, html, attachments };
     await sgMail.send(msg);
     return sendJson(res, 200, { ok: true });
   } catch (err) {
+    const status = err?.status || 502;
     const detail = err?.response?.body || err?.message || String(err);
-    console.error('SendGrid error:', detail);
-    return sendJson(res, 502, { ok: false, error: 'Versand fehlgeschlagen.' });
+    console.error('SendGrid/API error:', detail);
+    return sendJson(res, status, { ok: false, error: status === 413 ? 'Datei zu groß.' : 'Versand fehlgeschlagen.' });
   }
 }

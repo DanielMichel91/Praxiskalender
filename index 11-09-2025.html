@@ -40,8 +40,8 @@
       --brand-600:#2563eb;
 
       /* Seitenhintergrund: oben dunkler → unten heller */
-      --page-bg-top:#1d4ed8;     /* Blue 700 (deutlich dunkler) */
-      --page-bg-mid:#60a5fa;     /* Blue 400 (Übergang) */
+      --page-bg-top:#1d4ed8;     /* Blue 700 */
+      --page-bg-mid:#60a5fa;     /* Blue 400 */
       --page-bg-bottom:#eef6ff;  /* sehr hell am Seitenende */
 
       /* Cards / Text */
@@ -300,6 +300,83 @@
       * { transition:none !important; animation:none !important; }
       html{ scroll-behavior:auto; }
     }
+
+    /* === File-Upload (modern) === */
+    .sr-only{
+      position:absolute!important; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+    .file-control{ position:relative; }
+    .file-drop{
+      display:flex; align-items:center; gap:.9rem; width:100%;
+      border:2px dashed var(--brand-weak); border-radius:12px;
+      background:#fff; padding:1rem 1rem; cursor:pointer;
+      transition:border-color .2s ease, box-shadow .2s ease, background .2s ease, transform .1s ease;
+    }
+    .file-drop:hover{ border-color:var(--brand-weak-hover); box-shadow:0 6px 16px rgba(0,0,0,.06); transform:translateY(-1px); }
+    .file-drop.is-dragover{ border-color:var(--brand); background:rgba(37,99,235,.04); }
+    .file-icon{
+      flex:0 0 auto; width:40px; height:40px; border-radius:10px;
+      display:grid; place-items:center; background:rgba(37,99,235,.08);
+    }
+    .file-copy{ display:flex; flex-direction:column; gap:.15rem; min-width:0; }
+    .file-title{ font-weight:700; color:var(--text); }
+    .file-hint{ font-size:.92rem; color:#6b7280; }
+    .file-name{ font-size:.92rem; color:var(--brand-600); white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
+    .file-cta{
+      margin-left:auto; flex:0 0 auto;
+      padding:.6rem .9rem; border-radius:999px; border:2px solid var(--brand);
+      background:#fff; color:var(--brand-600); font-weight:800; cursor:pointer;
+    }
+    .file-cta:hover{ background:var(--brand-light); color:#fff; border-color:var(--brand-light); }
+
+/* --- Einheitliche Inputs & Textareas --- */
+.form textarea{
+  padding:.75rem .9rem;
+  border-radius:12px;
+  border:2px solid var(--brand-weak);
+  outline:none;
+  font:inherit;             /* wichtig: gleiche Schrift wie Inputs */
+  background:#fff;
+  width:100%;               /* gleiche Breite wie Inputs */
+  display:block;
+  resize:vertical;          /* nur Höhe variabel */
+  min-height:3.25rem;
+  line-height:1.5;
+}
+
+/* Einheitliche Placeholder (ein- & mehrzeilig) */
+.form input::placeholder,
+.form textarea::placeholder{
+  color:#9ca3af;
+  font-weight:500;
+  opacity:1;
+}
+
+/* Grid-Items dürfen schrumpfen (Overflow verhindern) */
+.form .form-grid .field{ min-width:0; }
+
+/* Nutzeranzahl: in einer Zeile halten, auch mobil */
+#nutzer_typ{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  flex-wrap:nowrap;       /* NICHT umbrechen */
+  overflow-x:auto;        /* falls sehr schmaler Screen */
+}
+#nutzer_typ label{ white-space:nowrap; }
+#teamCountGroup{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+}
+#team_count{ width:82px; }
+@media (max-width:390px){
+  #team_count{ width:66px; }
+}
+
+
   </style>
 </head>
 <body>
@@ -328,8 +405,8 @@
         </div>
       </section>
 
+      <!-- CTA aktuell ausgeblendet -->
       <!--
-      ===== CTA vorübergehend ausgeblendet =====
       <section class="cta" data-reveal style="transition-delay:.25s" hidden aria-hidden="true">
         <div class="cta-copy">
           <h2>Testen Sie die kostenfreie Demo-App</h2>
@@ -340,7 +417,6 @@
           <a href="###DEMO_LINK###" class="download-btn" id="demoButton">Demo herunterladen</a>
         </div>
       </section>
-      ==========================================
       -->
     </div>
 
@@ -489,15 +565,17 @@
     </div>
   </div>
 
-  <!-- Anfrage-Modal -->
+  <!-- Anfrage-Modal (Design beibehalten, Upload modern + neue Felder) -->
   <div id="anfrageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="anfrageTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="anfrageModal" aria-label="Schließen">&times;</button>
       <h2 id="anfrageTitle">Vollversion anfragen</h2>
-      <form id="anfrageForm" class="form" novalidate>
-        <!-- Honeypot -->
-        <input type="text" name="company" autocomplete="organization" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
 
+      <form id="anfrageForm" class="form" novalidate enctype="multipart/form-data">
+        <!-- Honeypot -->
+        <input type="text" name="company" autocomplete="organization" tabindex="-1" aria-hidden="true" class="sr-only">
+
+        <!-- Kontakt -->
         <div class="field">
           <label for="anrede">Anrede</label>
           <div class="radio-group" id="anrede" role="radiogroup" aria-label="Anrede">
@@ -521,6 +599,99 @@
           </div>
         </div>
 
+        <!-- Unternehmensdaten -->
+        <div class="form-grid" style="margin-top:1rem;">
+          <div class="field" style="grid-column:1/-1;">
+            <label for="company_name">Name des Unternehmens</label>
+            <input id="company_name" name="company_name" type="text" placeholder="Praxis XY / Firma" maxlength="120" autocomplete="organization">
+          </div>
+          <!-- Anschrift -->
+<div class="field" style="grid-column:1/-1;">
+  <label for="company_address">Anschrift</label>
+  <textarea id="company_address" name="company_address" rows="2"
+            placeholder="Straße Hausnr., PLZ Ort"></textarea>
+</div>
+        </div>
+
+        <!-- App-Inhalte -->
+        <div class="form-grid" style="margin-top:1rem;">
+          <div class="field" style="grid-column:1/-1;">
+            <label for="app_title">Praxisname (App-Titel)</label>
+            <input id="app_title" name="app_title" type="text" placeholder="z. B. Praxis Mustermann" maxlength="120">
+          </div>
+
+          <!-- Google-Mails -->
+<div class="field" style="grid-column:1/-1;">
+  <label for="play_emails">Google-Mailadresse/n (exklusiver Zugriff im Play&nbsp;Store)</label>
+  <textarea id="play_emails" name="play_emails" rows="2"
+            placeholder="z. B. praxis@gmail.com&#10;zweiteadresse@gmail.com"></textarea>
+  <p class="hint">Eine Adresse pro Zeile. Muss ein Google-Konto sein.</p>
+</div>
+
+          <!-- Behandler:innen -->
+<div class="field" style="grid-column:1/-1;">
+  <label for="behandlers">Behandler:innen (Name&nbsp;/&nbsp;Kürzel)</label>
+  <textarea id="behandlers" name="behandlers" rows="3"
+            placeholder="Dr. Müller (DM)&#10;Eva Beispiel (EB)"></textarea>
+  <p class="hint">Eine Person pro Zeile, Format z. B. „Name (Kürzel)“.</p>
+</div>
+
+          <!-- Nutzeranzahl (in einer Reihe) -->
+<div class="field" style="grid-column:1/-1;">
+  <label for="nutzer_typ">Nutzeranzahl</label>
+  <div class="radio-group" id="nutzer_typ" role="radiogroup" aria-label="Nutzeranzahl">
+    <label><input type="radio" name="nutzer_typ" id="nutzer_single" value="single" checked> 1&nbsp;Person</label>
+    <label><input type="radio" name="nutzer_typ" id="nutzer_team" value="team"> Team</label>
+    <div id="teamCountGroup" hidden>
+      <label for="team_count" style="margin:0; font-weight:600;">Anzahl</label>
+      <input id="team_count" name="team_count" type="number" inputmode="numeric" min="2" max="50" placeholder="2">
+    </div>
+  </div>
+  <p class="hint">Bei „Team“ bitte die Gesamtzahl der Nutzenden angeben.</p>
+</div>
+
+          <!-- Behandlungen – Datei (jetzt auch Bild erlaubt) -->
+          <div class="field" style="grid-column:1/-1;">
+            <label for="treatments_file">Behandlungen (Name | Dauer | Preis)</label>
+
+            <input id="treatments_file" name="treatments_file" type="file"
+                   class="sr-only"
+                   accept=".csv,.pdf,.xls,.xlsx,.png,.jpg,.jpeg,.webp,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/png,image/jpeg,image/webp">
+
+            <label class="file-drop" for="treatments_file" tabindex="0" id="treatments_drop" aria-describedby="treatments_hint">
+              <span class="file-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v4h16v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <div class="file-copy">
+                <span class="file-hint" id="treatments_hint">CSV, PDF, Excel oder Bild (PNG/JPG/WebP)</span>
+                <span class="file-name" id="treatments_file_name" aria-live="polite"></span>
+              </div>
+              <span class="file-cta" aria-hidden="true">Durchsuchen</span>
+            </label>
+          </div>
+
+          <!-- Logo -->
+          <div class="field" style="grid-column:1/-1;">
+            <label for="logo_file">Logo (PNG/JPG)</label>
+            <input id="logo_file" name="logo_file" type="file" class="sr-only" accept="image/png,image/jpeg">
+            <label class="file-drop" for="logo_file" tabindex="0" id="logo_drop" aria-describedby="logo_hint">
+              <span class="file-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M3 7h18v10H3zM7 13l3-3 3 3 3-3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <div class="file-copy">
+                <span class="file-hint" id="logo_hint">PNG oder JPG</span>
+                <span class="file-name" id="logo_file_name" aria-live="polite"></span>
+              </div>
+              <span class="file-cta" aria-hidden="true">Durchsuchen</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- B2B -->
         <div class="field" style="margin-top:.5rem;">
           <label class="checkbox">
             <input id="b2b" name="b2b" type="checkbox" required>
@@ -542,6 +713,7 @@
       </form>
     </div>
   </div>
+
   <!-- ======= /MODALS ======= -->
 
   <footer>
@@ -699,11 +871,31 @@
         setTimeout(initCarouselStart, 300);
       }
 
-      /* Formular: serverseitig senden */
+      /* Formular: serverseitig senden (JSON) */
       const anfrageModal = document.getElementById('anfrageModal');
       const form = document.getElementById('anfrageForm');
       const alertEl = document.getElementById('formAlert');
       const submitBtn = document.getElementById('submitBtn');
+
+      // Nutzeranzahl: Teamfeld ein-/ausblenden
+      const teamRadio = document.getElementById('nutzer_team');
+      const singleRadio = document.getElementById('nutzer_single');
+      const teamCountGroup = document.getElementById('teamCountGroup');
+      const teamCountInput = document.getElementById('team_count');
+      function toggleTeam(){
+        const isTeam = teamRadio?.checked;
+        if(isTeam){
+          teamCountGroup?.removeAttribute('hidden');
+          teamCountInput?.setAttribute('required','');
+        }else{
+          teamCountGroup?.setAttribute('hidden','');
+          teamCountInput?.removeAttribute('required');
+          if(teamCountInput) teamCountInput.value = '';
+        }
+      }
+      teamRadio?.addEventListener('change', toggleTeam);
+      singleRadio?.addEventListener('change', toggleTeam);
+      toggleTeam();
 
       function showAlert(msg, type){
         alertEl.textContent = msg;
@@ -720,15 +912,37 @@
         e.preventDefault();
         clearAlert();
 
+        // Helper: Zeilen -> Array
+        const toList = (val) =>
+          (val || '').split(/[\n,;]+/).map(s=>s.trim()).filter(Boolean);
+
+        const isTeam = teamRadio?.checked;
+
         const data = {
           anrede: form.anrede?.value || '',
           vorname: form.vorname?.value?.trim() || '',
           nachname: form.nachname?.value?.trim() || '',
           email: form.email?.value?.trim() || '',
+
+          company_name: document.getElementById('company_name')?.value?.trim() || '',
+          company_address: document.getElementById('company_address')?.value?.trim() || '',
+
+          app_title: document.getElementById('app_title')?.value?.trim() || '',
+          play_emails: toList(document.getElementById('play_emails')?.value),
+          behandlers: toList(document.getElementById('behandlers')?.value),
+
+          nutzer_typ: isTeam ? 'team' : 'single',
+          team_count: isTeam ? (parseInt(document.getElementById('team_count')?.value || '0',10) || 0) : 1,
+
+          /* Hinweis: Dateien werden bei JSON nicht übertragen – die Namen schicken wir ggf. mit */
+          treatments_file_name: document.getElementById('treatments_file')?.files?.[0]?.name || '',
+          logo_file_name: document.getElementById('logo_file')?.files?.[0]?.name || '',
+
           b2b: form.b2b?.checked ? 'true' : 'false',
-          company: form.company?.value?.trim() || ''
+          company: form.company?.value?.trim() || '' // honeypot
         };
 
+        // einfache Validierung
         if(!data.anrede || !data.vorname || !data.nachname || !data.email){
           form.reportValidity && form.reportValidity();
           return;
@@ -736,6 +950,11 @@
         if(data.b2b !== 'true'){
           showAlert('Bitte bestätigen Sie, dass Sie als Unternehmer nach § 14 BGB handeln.', 'error');
           document.getElementById('b2b')?.focus();
+          return;
+        }
+        if(isTeam && (!data.team_count || data.team_count < 2)){
+          showAlert('Bitte die Anzahl der Nutzer für das Team angeben (mind. 2).', 'error');
+          teamCountInput?.focus();
           return;
         }
 
@@ -756,6 +975,7 @@
 
           showAlert('Danke! Ihre Anfrage wurde erfolgreich versendet.', 'success');
           form.reset();
+          toggleTeam();
           setTimeout(()=>{
             anfrageModal?.classList.remove('active');
             anfrageModal?.setAttribute('aria-hidden','true');
@@ -769,6 +989,54 @@
         }
       });
     });
+  </script>
+
+  <!-- Upload-UI (Drag&Drop) -->
+  <script>
+    (function enhanceUploads(){
+      function setupFancyUpload(inputId, labelId, nameId){
+        const input = document.getElementById(inputId);
+        const drop  = document.getElementById(labelId);
+        const name  = document.getElementById(nameId);
+        if(!input || !drop) return;
+
+        function updateName(){
+          if(!name) return;
+          if(!input.files || input.files.length === 0){ name.textContent = ""; return; }
+          const files = Array.from(input.files).map(f => f.name).join(", ");
+          name.textContent = files;
+        }
+
+        // Label per Keyboard auslösbar machen
+        drop.addEventListener('keydown', (e)=>{
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault(); input.click();
+          }
+        });
+
+        // Drag & Drop
+        ['dragenter','dragover'].forEach(evt=>{
+          drop.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); drop.classList.add('is-dragover'); });
+        });
+        ['dragleave','dragend','drop'].forEach(evt=>{
+          drop.addEventListener(evt, e=>{ drop.classList.remove('is-dragover'); });
+        });
+        drop.addEventListener('drop', e=>{
+          e.preventDefault();
+          if(e.dataTransfer?.files?.length){
+            const dt = new DataTransfer();
+            dt.items.add(e.dataTransfer.files[0]); // eine Datei genügt
+            input.files = dt.files;
+            updateName();
+          }
+        });
+
+        input.addEventListener('change', updateName);
+      }
+
+      setupFancyUpload('treatments_file', 'treatments_drop', 'treatments_file_name');
+      setupFancyUpload('logo_file',       'logo_drop',       'logo_file_name');
+    })();
   </script>
 </body>
 </html>

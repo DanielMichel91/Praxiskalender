@@ -86,7 +86,7 @@
       border-radius:10px;
     }
 
-    /* Header (nutzt den Seitenverlauf als Hintergrund) */
+    /* Header */
     header{
       background:transparent;
       text-align:center;
@@ -110,7 +110,7 @@
       text-shadow:0 2px 6px rgba(0,0,0,.28);
     }
 
-    /* Layout – WEISSE CARDS auf blauem Verlauf */
+    /* Layout */
     main{margin-top:0;}
     .container{
       max-width:var(--container); margin:0 auto 3rem; padding:2.2rem 1.1rem;
@@ -122,12 +122,8 @@
     /* Features */
     .features{display:flex; justify-content:center;}
     .features ul{list-style:none; display:inline-block; text-align:left;}
-    .features li{
-      position:relative; padding-left:1.6rem; margin:.58rem 0; font-size:1.02rem;
-    }
-    .features li::before{
-      content:"✔"; position:absolute; left:0; top:0; color:var(--brand); font-weight:800; line-height:1;
-    }
+    .features li{ position:relative; padding-left:1.6rem; margin:.58rem 0; font-size:1.02rem; }
+    .features li::before{ content:"✔"; position:absolute; left:0; top:0; color:var(--brand); font-weight:800; line-height:1; }
 
     /* CTA (aktuell ausgeblendet) */
     .cta-copy p{margin:0; color:#1f2937;}
@@ -141,14 +137,11 @@
     }
     .download-btn:hover{ background:var(--brand-light); transform:translateY(-1px); box-shadow:0 10px 22px rgba(37,99,235,.18); }
 
-    /* Keine zusätzlichen Hintergrund-Akzente */
     .band{ background:none; padding:0; }
 
     /* Gallery */
     .gallery .subtitle{ margin-top:-.35rem; color:var(--muted); }
-    .screenshot-grid{
-      display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; margin-top:1.25rem;
-    }
+    .screenshot-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; margin-top:1.25rem; }
     .screenshot{
       position:relative; overflow:hidden; border-radius:16px;
       background:#fff; box-shadow:var(--shadow);
@@ -159,9 +152,7 @@
     .screenshot img{ width:100%; height:200px; object-fit:cover; display:block; transition:transform .35s ease; }
     .screenshot.wide img{ height:160px; }
     .screenshot:hover img{ transform:scale(1.03); }
-    .screenshot .cap{
-      padding:.7rem .9rem; border-top:1px solid #eef2f7; font-size:.92rem; color:#4b5563; text-align:left;
-    }
+    .screenshot .cap{ padding:.7rem .9rem; border-top:1px solid #eef2f7; font-size:.92rem; color:#4b5563; text-align:left; }
 
     /* Lightbox */
     .lightbox{
@@ -211,14 +202,16 @@
     .form .form-grid{ display:grid; gap:1rem; grid-template-columns:1fr 1fr; }
     .form .field{ display:flex; flex-direction:column; }
     .form label{ font-weight:700; margin-bottom:.35rem; }
-    .form input[type="text"], .form input[type="email"]{
+    .form input[type="text"], .form input[type="email"], .form input[type="number"]{
       padding:.75rem .9rem; border-radius:12px; border:2px solid var(--brand-weak);
       outline:none; font:inherit; transition:border-color .2s ease, box-shadow .2s ease; background:#fff;
+      width:100%;
     }
     .form input:focus{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(37,99,235,.15); }
     .radio-group{
       display:flex; gap:1rem; align-items:center; flex-wrap:wrap;
       border:2px solid var(--brand-weak); border-radius:12px; padding:.6rem .8rem; background:#fff;
+      width:100%;
     }
     .form .actions{ margin-top:1.1rem; display:flex; gap:.75rem; align-items:center; justify-content:flex-end; }
     .primary-btn{
@@ -235,7 +228,7 @@
     .alert.success{ color:#0a7a3d; }
     .alert.error{ color:#b91c1c; }
 
-    /* --- MODALS --- (über Footer, hoher z-index) */
+    /* --- MODALS --- */
     .modal-overlay{
       position:fixed; inset:0; background:rgba(0,0,0,.6);
       display:none; align-items:center; justify-content:center; z-index:4000;
@@ -251,7 +244,7 @@
     .modal p{margin-bottom:1rem; font-size:.95rem; white-space:pre-line;}
     .modal ul{margin:.25rem 0 1rem 1.25rem;}
 
-    /* Footer (wie zuvor) */
+    /* Footer */
     footer{
       background: var(--card-bg);
       text-align:center; padding:2rem 1rem; font-size:.92rem; color:#888;
@@ -270,13 +263,11 @@
     /* Mobile */
     @media(max-width:650px){
       :root{ --logo-size:130px; --demo-logo-size:88px; }
-
       .header-content{ gap:.2rem; }
       .header-text{ text-align:center; }
       .header-text p{ font-size:1.02rem; }
       .download-btn{width:100%;}
       .demo-row{ justify-content:center;}
-
       .screenshot-grid{
         display:flex; gap:.75rem; overflow-x:auto; padding-inline:0;
         scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scroll-behavior:smooth;
@@ -286,13 +277,10 @@
       .screenshot-grid::-webkit-scrollbar{ display:none; }
       .screenshot-grid{ scrollbar-width:none; }
       .screenshot-grid.no-snap{ scroll-snap-type:none !important; }
-
       .screenshot img{ height:200px; }
       .screenshot.wide img{ height:160px; }
-
       .price-grid{ gap:.75rem; }
       .price-card{ min-width:260px; }
-
       .form .actions{ justify-content:stretch; }
     }
 
@@ -329,6 +317,39 @@
       background:#fff; color:var(--brand-600); font-weight:800; cursor:pointer;
     }
     .file-cta:hover{ background:var(--brand-light); color:#fff; border-color:var(--brand-light); }
+
+    /* --- Einheitliche Inputs & Textareas --- */
+    .form textarea{
+      padding:.75rem .9rem;
+      border-radius:12px;
+      border:2px solid var(--brand-weak);
+      outline:none;
+      font:inherit;             /* gleiche Schrift wie Inputs */
+      background:#fff;
+      width:100%;               /* gleiche Breite wie Inputs */
+      display:block;
+      resize:vertical;          /* nur Höhe variabel */
+      min-height:3.25rem;
+      line-height:1.5;
+    }
+
+    /* Einheitliche Placeholder (ein- & mehrzeilig) */
+    .form input::placeholder,
+    .form textarea::placeholder{
+      color:#9ca3af;
+      font-weight:500;
+      opacity:1;
+    }
+
+    /* Grid-Items dürfen schrumpfen (Overflow verhindern) */
+    .form .form-grid .field{ min-width:0; }
+
+    /* Nutzeranzahl: in einer Zeile halten, auch mobil */
+    #nutzer_typ{ display:flex; align-items:center; gap:1rem; flex-wrap:nowrap; overflow-x:auto; }
+    #nutzer_typ label{ white-space:nowrap; }
+    #teamCountGroup{ margin-left:auto; display:flex; align-items:center; gap:.5rem; }
+    #team_count{ width:82px; }
+    @media (max-width:390px){ #team_count{ width:66px; } }
   </style>
 </head>
 <body>
@@ -517,7 +538,7 @@
     </div>
   </div>
 
-  <!-- Anfrage-Modal (Design beibehalten, Upload modern + neue Felder) -->
+  <!-- Anfrage-Modal -->
   <div id="anfrageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="anfrageTitle" aria-hidden="true">
     <div class="modal">
       <button class="modal-close" data-close="anfrageModal" aria-label="Schließen">&times;</button>
@@ -555,12 +576,11 @@
         <div class="form-grid" style="margin-top:1rem;">
           <div class="field" style="grid-column:1/-1;">
             <label for="company_name">Name des Unternehmens</label>
-            <input id="company_name" name="company_name" type="text" placeholder="Praxis XY / Firma" maxlength="120" autocomplete="organization">
+            <input id="company_name" name="company_name" type="text" placeholder="Praxis XY / Firma" maxlength="120" autocomplete="organization" required>
           </div>
           <div class="field" style="grid-column:1/-1;">
             <label for="company_address">Anschrift</label>
-            <textarea id="company_address" name="company_address" rows="2" placeholder="Straße Hausnr., PLZ Ort"
-                      style="padding:.75rem .9rem; border-radius:12px; border:2px solid var(--brand-weak);"></textarea>
+            <textarea id="company_address" name="company_address" rows="2" placeholder="Straße Hausnr., PLZ Ort" required></textarea>
           </div>
         </div>
 
@@ -568,48 +588,42 @@
         <div class="form-grid" style="margin-top:1rem;">
           <div class="field" style="grid-column:1/-1;">
             <label for="app_title">Praxisname (App-Titel)</label>
-            <input id="app_title" name="app_title" type="text" placeholder="z. B. Praxis Mustermann" maxlength="120">
+            <input id="app_title" name="app_title" type="text" placeholder="z. B. Praxis Mustermann" maxlength="120" required>
           </div>
 
-          <!-- Play-Store-Zugriff -->
+          <!-- Google-Mails -->
           <div class="field" style="grid-column:1/-1;">
             <label for="play_emails">Google-Mailadresse/n (exklusiver Zugriff im Play&nbsp;Store)</label>
-            <textarea id="play_emails" name="play_emails" rows="2" placeholder="z. B. praxis@gmail.com&#10;zweiteadresse@gmail.com"
-                      style="padding:.75rem .9rem; border-radius:12px; border:2px solid var(--brand-weak);"></textarea>
+            <textarea id="play_emails" name="play_emails" rows="2" placeholder="z. B. praxis@gmail.com&#10;zweiteadresse@gmail.com" required></textarea>
             <p class="hint">Eine Adresse pro Zeile. Muss ein Google-Konto sein.</p>
           </div>
 
           <!-- Behandler:innen -->
           <div class="field" style="grid-column:1/-1;">
             <label for="behandlers">Behandler:innen (Name&nbsp;/&nbsp;Kürzel)</label>
-            <textarea id="behandlers" name="behandlers" rows="3" placeholder="Dr. Müller (DM)&#10;Eva Beispiel (EB)"
-                      style="padding:.75rem .9rem; border-radius:12px; border:2px solid var(--brand-weak);"></textarea>
+            <textarea id="behandlers" name="behandlers" rows="3" placeholder="Dr. Müller (DM)&#10;Eva Beispiel (EB)" required></textarea>
             <p class="hint">Eine Person pro Zeile, Format z. B. „Name (Kürzel)“.</p>
           </div>
 
-          <!-- Nutzeranzahl -->
+          <!-- Nutzeranzahl (in einer Reihe) -->
           <div class="field" style="grid-column:1/-1;">
             <label for="nutzer_typ">Nutzeranzahl</label>
             <div class="radio-group" id="nutzer_typ" role="radiogroup" aria-label="Nutzeranzahl">
               <label><input type="radio" name="nutzer_typ" id="nutzer_single" value="single" checked> 1&nbsp;Person</label>
               <label><input type="radio" name="nutzer_typ" id="nutzer_team" value="team"> Team</label>
-              <div id="teamCountGroup" style="display:flex; align-items:center; gap:.5rem; margin-left:auto;" hidden>
+              <div id="teamCountGroup" hidden>
                 <label for="team_count" style="margin:0; font-weight:600;">Anzahl</label>
-                <input id="team_count" name="team_count" type="number" inputmode="numeric" min="2" max="50" placeholder="2"
-                       style="width:100px; padding:.6rem .8rem; border-radius:10px; border:2px solid var(--brand-weak);">
+                <input id="team_count" name="team_count" type="number" inputmode="numeric" min="2" max="50" placeholder="2">
               </div>
             </div>
             <p class="hint">Bei „Team“ bitte die Gesamtzahl der Nutzenden angeben.</p>
           </div>
 
-          <!-- Behandlungen – Datei (jetzt auch Bild erlaubt) -->
+          <!-- Behandlungen – Datei (auch Bild erlaubt) -->
           <div class="field" style="grid-column:1/-1;">
             <label for="treatments_file">Behandlungen (Name | Dauer | Preis)</label>
-
-            <input id="treatments_file" name="treatments_file" type="file"
-                   class="sr-only"
+            <input id="treatments_file" name="treatments_file" type="file" class="sr-only" required
                    accept=".csv,.pdf,.xls,.xlsx,.png,.jpg,.jpeg,.webp,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/png,image/jpeg,image/webp">
-
             <label class="file-drop" for="treatments_file" tabindex="0" id="treatments_drop" aria-describedby="treatments_hint">
               <span class="file-icon" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -627,7 +641,7 @@
           <!-- Logo -->
           <div class="field" style="grid-column:1/-1;">
             <label for="logo_file">Logo (PNG/JPG)</label>
-            <input id="logo_file" name="logo_file" type="file" class="sr-only" accept="image/png,image/jpeg">
+            <input id="logo_file" name="logo_file" type="file" class="sr-only" accept="image/png,image/jpeg" required>
             <label class="file-drop" for="logo_file" tabindex="0" id="logo_drop" aria-describedby="logo_hint">
               <span class="file-icon" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -685,310 +699,242 @@
     <div class="lb-caption"></div>
   </div>
 
+  <!-- Alles JS (Reveal, Modals, Lightbox, Upload-UI, Formular) -->
   <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-      window.scrollTo(0,0);
-      window.addEventListener('pageshow', (e)=>{ if(e.persisted) window.scrollTo(0,0); });
+  document.addEventListener('DOMContentLoaded', () => {
+    /* --- Start immer oben --- */
+    window.scrollTo(0, 0);
+    window.addEventListener('pageshow', (e) => { if (e.persisted) window.scrollTo(0, 0); });
 
-      // Reveal
-      const revealEls=document.querySelectorAll('[data-reveal]');
-      const observer=new IntersectionObserver((entries,obs)=>{
-        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-visible'); obs.unobserve(e.target); }});
-      },{threshold:.2});
-      revealEls.forEach(el=>observer.observe(el));
+    /* --- Reveal --- */
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); }});
+    }, { threshold: .2 });
+    revealEls.forEach(el => observer.observe(el));
 
-      // Focus-Trap & Body-Scroll sperren
-      const main = document.getElementById('appMain');
-      let lastTrigger = null;
-      function openModalById(id){
-        const el=document.getElementById(id);
-        if(!el) return;
-        lastTrigger = document.querySelector(`[data-open="${id}"]`) || document.activeElement;
-        el.classList.add('active'); el.setAttribute('aria-hidden','false');
-        document.body.classList.add('modal-open');
-        main?.setAttribute('inert','');
-        const focusable = el.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
-        focusable[0]?.focus();
-        function trap(e){
-          if(!el.classList.contains('active')) return;
-          if(e.key !== 'Tab') return;
-          const nodes = Array.from(focusable).filter(n=>!n.hasAttribute('disabled'));
-          if(nodes.length===0) return;
-          const first = nodes[0], last = nodes[nodes.length - 1];
-          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-        }
-        el._trap = trap;
-        document.addEventListener('keydown', trap);
+    /* --- Modals (Focus-Trap + Body-Scroll sperren) --- */
+    const main = document.getElementById('appMain');
+    let lastTrigger = null;
+
+    function openModalById(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      lastTrigger = document.querySelector(`[data-open="${id}"]`) || document.activeElement;
+      el.classList.add('active');
+      el.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+      main?.setAttribute('inert', '');
+      const focusable = el.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+      focusable[0]?.focus();
+      function trap(e){
+        if (!el.classList.contains('active') || e.key !== 'Tab') return;
+        const nodes = Array.from(focusable).filter(n => !n.hasAttribute('disabled'));
+        if (!nodes.length) return;
+        const first = nodes[0], last = nodes[nodes.length - 1];
+        if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
       }
-      function closeModalById(id){
-        const el=document.getElementById(id);
-        if(!el) return;
-        el.classList.remove('active'); el.setAttribute('aria-hidden','true');
-        document.removeEventListener('keydown', el._trap || (()=>{}));
-        main?.removeAttribute('inert');
-        document.body.classList.remove('modal-open');
-        lastTrigger?.focus?.();
-      }
+      el._trap = trap;
+      document.addEventListener('keydown', trap);
+    }
+    function closeModalById(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('active');
+      el.setAttribute('aria-hidden', 'true');
+      document.removeEventListener('keydown', el._trap || (() => {}));
+      main?.removeAttribute('inert');
+      document.body.classList.remove('modal-open');
+      lastTrigger?.focus?.();
+    }
+    window.openModalById = openModalById;
+    window.closeModalById = closeModalById;
 
-      // Modal Handling
-      const openLinks=document.querySelectorAll('[data-open]');
-      const closeEls=document.querySelectorAll('[data-close]');
-      openLinks.forEach(link=>{
-        link.addEventListener('click',e=>{
-          e.preventDefault();
-          const id=e.currentTarget.getAttribute('data-open');
-          openModalById(id);
-        });
-      });
-      closeEls.forEach(btn=>{
-        btn.addEventListener('click',()=>{
-          const id=btn.getAttribute('data-close');
-          closeModalById(id);
-        });
-      });
-      document.querySelectorAll('.modal-overlay').forEach(overlay=>{
-        overlay.addEventListener('click',e=>{ if(e.target===overlay){ overlay.classList.remove('active'); overlay.setAttribute('aria-hidden','true'); main?.removeAttribute('inert'); document.body.classList.remove('modal-open'); }});
-      });
-
-      // Lightbox
-      const shots = Array.from(document.querySelectorAll('#shotGrid .screenshot'));
-      const lb = document.getElementById('lightbox');
-      const lbImg = lb.querySelector('img');
-      const lbCap = lb.querySelector('.lb-caption');
-      const btnPrev = lb.querySelector('.lb-prev');
-      const btnNext = lb.querySelector('.lb-next');
-      const btnClose = lb.querySelector('.lb-close');
-      let idx = 0;
-
-      function updateArrows(){ btnPrev.disabled = (idx === 0); btnNext.disabled = (idx === shots.length - 1); }
-      function openAt(i){
-        idx = Math.max(0, Math.min(i, shots.length - 1));
-        const item = shots[idx];
-        const src = item.getAttribute('data-src') || item.querySelector('img')?.src;
-        if(!src){ return; }
-        lbImg.src = src;
-        lbImg.alt = item.querySelector('img')?.alt || 'Screenshot';
-        lbCap.textContent = item.getAttribute('data-caption') || item.querySelector('.cap')?.textContent || '';
-        lb.classList.add('open');
-        lb.setAttribute('aria-hidden','false');
-        updateArrows();
-      }
-      function next(){ if (idx < shots.length - 1) openAt(idx + 1); }
-      function prev(){ if (idx > 0) openAt(idx - 1); }
-      function closeLB(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); }
-
-      shots.forEach((el,i)=> el.addEventListener('click',()=>openAt(i)));
-      btnNext.addEventListener('click', next);
-      btnPrev.addEventListener('click', prev);
-      btnClose.addEventListener('click', closeLB);
-      lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
-      document.addEventListener('keydown', e=>{
-        if(lb.classList.contains('open')){
-          if(e.key==='Escape') closeLB();
-          if(e.key==='ArrowRight') next();
-          if(e.key==='ArrowLeft') prev();
-        }
-      });
-
-      // Mobile-Karussell
-      const grid = document.getElementById('shotGrid');
-      const mq = window.matchMedia('(max-width:650px)');
-      function snapToFirstHard(){
-        if(!grid) return;
-        if(!mq.matches){ grid.scrollLeft = 0; return; }
-        grid.classList.add('no-snap');
-        grid.scrollLeft = 0;
-        requestAnimationFrame(()=> requestAnimationFrame(()=>{ grid.classList.remove('no-snap'); }));
-      }
-      function initCarouselStart(){
-        if(!grid) return;
-        if(mq.matches) snapToFirstHard();
-      }
-      initCarouselStart();
-      window.addEventListener('load', initCarouselStart);
-      window.addEventListener('resize', initCarouselStart);
-      window.addEventListener('orientationchange', initCarouselStart);
-      window.addEventListener('pageshow', (e)=>{ if(e.persisted) initCarouselStart(); });
-      if(grid){
-        const imgs = grid.querySelectorAll('img');
-        let pending = 0;
-        imgs.forEach(img=>{
-          if(!img.complete){
-            pending++;
-            img.addEventListener('load', ()=>{ pending--; if(pending===0) initCarouselStart(); }, {once:true});
-          }
-        });
-        if(pending===0) initCarouselStart();
-        setTimeout(initCarouselStart, 300);
-      }
-
-      /* Formular: serverseitig senden (JSON) */
-      const anfrageModal = document.getElementById('anfrageModal');
-      const form = document.getElementById('anfrageForm');
-      const alertEl = document.getElementById('formAlert');
-      const submitBtn = document.getElementById('submitBtn');
-
-      // Nutzeranzahl: Teamfeld ein-/ausblenden
-      const teamRadio = document.getElementById('nutzer_team');
-      const singleRadio = document.getElementById('nutzer_single');
-      const teamCountGroup = document.getElementById('teamCountGroup');
-      const teamCountInput = document.getElementById('team_count');
-      function toggleTeam(){
-        const isTeam = teamRadio?.checked;
-        if(isTeam){
-          teamCountGroup?.removeAttribute('hidden');
-          teamCountInput?.setAttribute('required','');
-        }else{
-          teamCountGroup?.setAttribute('hidden','');
-          teamCountInput?.removeAttribute('required');
-          if(teamCountInput) teamCountInput.value = '';
-        }
-      }
-      teamRadio?.addEventListener('change', toggleTeam);
-      singleRadio?.addEventListener('change', toggleTeam);
-      toggleTeam();
-
-      function showAlert(msg, type){
-        alertEl.textContent = msg;
-        alertEl.className = 'alert ' + (type || '');
-        alertEl.style.display = 'block';
-      }
-      function clearAlert(){
-        alertEl.textContent = '';
-        alertEl.className = 'alert';
-        alertEl.style.display = 'none';
-      }
-
-      form?.addEventListener('submit', async (e)=>{
-        e.preventDefault();
-        clearAlert();
-
-        // Helper: Zeilen -> Array
-        const toList = (val) =>
-          (val || '').split(/[\n,;]+/).map(s=>s.trim()).filter(Boolean);
-
-        const isTeam = teamRadio?.checked;
-
-        const data = {
-          anrede: form.anrede?.value || '',
-          vorname: form.vorname?.value?.trim() || '',
-          nachname: form.nachname?.value?.trim() || '',
-          email: form.email?.value?.trim() || '',
-
-          company_name: document.getElementById('company_name')?.value?.trim() || '',
-          company_address: document.getElementById('company_address')?.value?.trim() || '',
-
-          app_title: document.getElementById('app_title')?.value?.trim() || '',
-          play_emails: toList(document.getElementById('play_emails')?.value),
-          behandlers: toList(document.getElementById('behandlers')?.value),
-
-          nutzer_typ: isTeam ? 'team' : 'single',
-          team_count: isTeam ? (parseInt(document.getElementById('team_count')?.value || '0',10) || 0) : 1,
-
-          /* Hinweis: Dateien werden bei JSON nicht übertragen – die Namen schicken wir ggf. mit */
-          treatments_file_name: document.getElementById('treatments_file')?.files?.[0]?.name || '',
-          logo_file_name: document.getElementById('logo_file')?.files?.[0]?.name || '',
-
-          b2b: form.b2b?.checked ? 'true' : 'false',
-          company: form.company?.value?.trim() || '' // honeypot
-        };
-
-        // einfache Validierung
-        if(!data.anrede || !data.vorname || !data.nachname || !data.email){
-          form.reportValidity && form.reportValidity();
-          return;
-        }
-        if(data.b2b !== 'true'){
-          showAlert('Bitte bestätigen Sie, dass Sie als Unternehmer nach § 14 BGB handeln.', 'error');
-          document.getElementById('b2b')?.focus();
-          return;
-        }
-        if(isTeam && (!data.team_count || data.team_count < 2)){
-          showAlert('Bitte die Anzahl der Nutzer für das Team angeben (mind. 2).', 'error');
-          teamCountInput?.focus();
-          return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Senden...';
-
-        try{
-          const res = await fetch('/api/send-request', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(data),
-          });
-
-          const json = await res.json().catch(()=> ({}));
-          if(!res.ok){
-            throw new Error(json?.error || 'Senden fehlgeschlagen.');
-          }
-
-          showAlert('Danke! Ihre Anfrage wurde erfolgreich versendet.', 'success');
-          form.reset();
-          toggleTeam();
-          setTimeout(()=>{
-            anfrageModal?.classList.remove('active');
-            anfrageModal?.setAttribute('aria-hidden','true');
-            clearAlert();
-          }, 2000);
-        }catch(err){
-          showAlert(err.message || 'Es ist ein Fehler aufgetreten.', 'error');
-        }finally{
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Anfrage absenden';
-        }
-      });
+    /* Trigger */
+    document.querySelectorAll('[data-open]').forEach(link => {
+      link.addEventListener('click', (e) => { e.preventDefault(); openModalById(e.currentTarget.getAttribute('data-open')); });
     });
-  </script>
+    document.querySelectorAll('[data-close]').forEach(btn => {
+      btn.addEventListener('click', () => closeModalById(btn.getAttribute('data-close')));
+    });
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModalById(overlay.id); });
+    });
 
-  <!-- Upload-UI (Drag&Drop) -->
-  <script>
-    (function enhanceUploads(){
-      function setupFancyUpload(inputId, labelId, nameId){
-        const input = document.getElementById(inputId);
-        const drop  = document.getElementById(labelId);
-        const name  = document.getElementById(nameId);
-        if(!input || !drop) return;
+    /* --- Lightbox --- */
+    const shots = Array.from(document.querySelectorAll('#shotGrid .screenshot'));
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb?.querySelector('img');
+    const lbCap = lb?.querySelector('.lb-caption');
+    const btnPrev = lb?.querySelector('.lb-prev');
+    const btnNext = lb?.querySelector('.lb-next');
+    const btnClose = lb?.querySelector('.lb-close');
+    let idx = 0;
+    function updateArrows(){ if(!btnPrev||!btnNext) return; btnPrev.disabled = (idx === 0); btnNext.disabled = (idx === shots.length - 1); }
+    function openAt(i){
+      if(!lb || !lbImg) return;
+      idx = Math.max(0, Math.min(i, shots.length - 1));
+      const item = shots[idx];
+      const src = item.getAttribute('data-src') || item.querySelector('img')?.src;
+      if (!src) return;
+      lbImg.src = src;
+      lbImg.alt = item.querySelector('img')?.alt || 'Screenshot';
+      if (lbCap) lbCap.textContent = item.getAttribute('data-caption') || item.querySelector('.cap')?.textContent || '';
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      updateArrows();
+    }
+    function next(){ if (idx < shots.length - 1) openAt(idx + 1); }
+    function prev(){ if (idx > 0) openAt(idx - 1); }
+    function closeLB(){ if(!lb) return; lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); }
+    shots.forEach((el, i) => el.addEventListener('click', () => openAt(i)));
+    btnNext?.addEventListener('click', next);
+    btnPrev?.addEventListener('click', prev);
+    btnClose?.addEventListener('click', closeLB);
+    lb?.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+    document.addEventListener('keydown', e => {
+      if (!lb?.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLB();
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    });
 
-        function updateName(){
-          if(!name) return;
-          if(!input.files || input.files.length === 0){ name.textContent = ""; return; }
-          const files = Array.from(input.files).map(f => f.name).join(", ");
-          name.textContent = files;
+    /* --- Mobile-Karussell Startposition --- */
+    const grid = document.getElementById('shotGrid');
+    const mq = window.matchMedia('(max-width:650px)');
+    function snapToFirstHard(){
+      if(!grid) return;
+      if (!mq.matches){ grid.scrollLeft = 0; return; }
+      grid.classList.add('no-snap');
+      grid.scrollLeft = 0;
+      requestAnimationFrame(() => requestAnimationFrame(() => { grid.classList.remove('no-snap'); }));
+    }
+    function initCarouselStart(){ if (!grid) return; if (mq.matches) snapToFirstHard(); }
+    initCarouselStart();
+    window.addEventListener('load', initCarouselStart);
+    window.addEventListener('resize', initCarouselStart);
+    window.addEventListener('orientationchange', initCarouselStart);
+    window.addEventListener('pageshow', (e) => { if (e.persisted) initCarouselStart(); });
+    if (grid){
+      const imgs = grid.querySelectorAll('img'); let pending = 0;
+      imgs.forEach(img => {
+        if (!img.complete){
+          pending++;
+          img.addEventListener('load', () => { pending--; if (pending === 0) initCarouselStart(); }, { once:true });
         }
+      });
+      if (pending === 0) initCarouselStart();
+      setTimeout(initCarouselStart, 300);
+    }
 
-        // Label per Keyboard auslösbar machen
-        drop.addEventListener('keydown', (e)=>{
-          if(e.key === 'Enter' || e.key === ' '){
-            e.preventDefault(); input.click();
-          }
-        });
+    /* --- Upload-UI (Drag&Drop, Dateiname) --- */
+    function setupFancyUpload(inputId, dropId, nameId){
+      const input = document.getElementById(inputId);
+      const drop  = document.getElementById(dropId);
+      const name  = document.getElementById(nameId);
+      if (!input || !drop) return;
 
-        // Drag & Drop
-        ['dragenter','dragover'].forEach(evt=>{
-          drop.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); drop.classList.add('is-dragover'); });
-        });
-        ['dragleave','dragend','drop'].forEach(evt=>{
-          drop.addEventListener(evt, e=>{ drop.classList.remove('is-dragover'); });
-        });
-        drop.addEventListener('drop', e=>{
-          e.preventDefault();
-          if(e.dataTransfer?.files?.length){
-            const dt = new DataTransfer();
-            dt.items.add(e.dataTransfer.files[0]); // eine Datei genügt
-            input.files = dt.files;
-            updateName();
-          }
-        });
-
-        input.addEventListener('change', updateName);
+      function updateName(){
+        if (!name) return;
+        if (!input.files || input.files.length === 0){ name.textContent = ""; return; }
+        const files = Array.from(input.files).map(f => f.name).join(", ");
+        name.textContent = files;
       }
 
-      setupFancyUpload('treatments_file', 'treatments_drop', 'treatments_file_name');
-      setupFancyUpload('logo_file',       'logo_drop',       'logo_file_name');
-    })();
+      drop.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); input.click(); }
+      });
+      ['dragenter','dragover'].forEach(evt => {
+        drop.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); drop.classList.add('is-dragover'); });
+      });
+      ['dragleave','dragend','drop'].forEach(evt => {
+        drop.addEventListener(evt, () => drop.classList.remove('is-dragover'));
+      });
+      drop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer?.files?.length){
+          const dt = new DataTransfer();
+          dt.items.add(e.dataTransfer.files[0]); // eine Datei reicht
+          input.files = dt.files;
+          updateName();
+        }
+      });
+      input.addEventListener('change', updateName);
+    }
+    setupFancyUpload('treatments_file', 'treatments_drop', 'treatments_file_name');
+    setupFancyUpload('logo_file',       'logo_drop',       'logo_file_name');
+
+    /* --- Nutzeranzahl (Teamfeld togglen) --- */
+    const singleRadio = document.getElementById('nutzer_single');
+    const teamRadio   = document.getElementById('nutzer_team');
+    const teamGroup   = document.getElementById('teamCountGroup');
+    const teamCount   = document.getElementById('team_count');
+    function syncTeam(){
+      const isTeam = !!teamRadio?.checked;
+      if (teamGroup) teamGroup.hidden = !isTeam;
+      if (teamCount) teamCount.required = isTeam;
+      if (!isTeam && teamCount) teamCount.value = '';
+    }
+    [singleRadio, teamRadio].forEach(r => r?.addEventListener('change', syncTeam));
+    syncTeam();
+
+    /* --- Formular: multipart senden, Reload danach --- */
+    const form = document.getElementById('anfrageForm');
+    const alertEl = document.getElementById('formAlert');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showAlert(msg, type){
+      alertEl.textContent = msg;
+      alertEl.className = 'alert ' + (type || '');
+      alertEl.style.display = 'block';
+    }
+    function clearAlert(){
+      alertEl.textContent = '';
+      alertEl.className = 'alert';
+      alertEl.style.display = 'none';
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearAlert();
+
+      if (form.checkValidity && !form.checkValidity()){
+        form.reportValidity?.();
+        return;
+      }
+      if (teamRadio?.checked && (!teamCount?.value || parseInt(teamCount.value, 10) < 2)){
+        showAlert('Bitte Teamgröße (mind. 2) angeben.', 'error');
+        teamCount?.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Senden...';
+
+      try{
+        const fd = new FormData(form);
+        const res = await fetch('/api/send-request', { method: 'POST', body: fd });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json?.error || 'Senden fehlgeschlagen.');
+
+        showAlert('Danke! Ihre Anfrage wurde erfolgreich versendet.', 'success');
+        form.reset();
+        syncTeam();
+
+        setTimeout(() => {
+          closeModalById('anfrageModal');
+          clearAlert();
+          setTimeout(() => location.reload(), 120); // Scroll wieder normal
+        }, 1400);
+      } catch (err){
+        showAlert(err.message || 'Es ist ein Fehler aufgetreten.', 'error');
+      } finally{
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Anfrage absenden';
+      }
+    });
+  });
   </script>
 </body>
 </html>
