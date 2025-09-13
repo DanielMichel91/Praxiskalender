@@ -879,61 +879,91 @@
     [singleRadio, teamRadio].forEach(r => r?.addEventListener('change', syncTeam));
     syncTeam();
 
-    /* --- Formular: multipart senden, Reload danach --- */
-    const form = document.getElementById('anfrageForm');
-    const alertEl = document.getElementById('formAlert');
-    const submitBtn = document.getElementById('submitBtn');
+/* --- Formular: multipart senden, Reload danach --- */
+const form = document.getElementById('anfrageForm');
+const alertEl = document.getElementById('formAlert');
+const submitBtn = document.getElementById('submitBtn');
 
-    function showAlert(msg, type){
-      alertEl.textContent = msg;
-      alertEl.className = 'alert ' + (type || '');
-      alertEl.style.display = 'block';
-    }
-    function clearAlert(){
-      alertEl.textContent = '';
-      alertEl.className = 'alert';
-      alertEl.style.display = 'none';
-    }
+function showAlert(msg, type){
+  alertEl.textContent = msg;
+  alertEl.className = 'alert ' + (type || '');
+  alertEl.style.display = 'block';
+}
+function clearAlert(){
+  alertEl.textContent = '';
+  alertEl.className = 'alert';
+  alertEl.style.display = 'none';
+}
 
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      clearAlert();
+form?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearAlert();
 
-      if (form.checkValidity && !form.checkValidity()){
-        form.reportValidity?.();
-        return;
-      }
-      if (teamRadio?.checked && (!teamCount?.value || parseInt(teamCount.value, 10) < 2)){
-        showAlert('Bitte Teamgröße (mind. 2) angeben.', 'error');
-        teamCount?.focus();
-        return;
-      }
+  // HTML5-Validation + Teamgröße prüfen
+  if (form.checkValidity && !form.checkValidity()){
+    form.reportValidity?.();
+    return;
+  }
+  const teamRadio = document.getElementById('nutzer_team');
+  const teamCount = document.getElementById('team_count');
+  if (teamRadio?.checked && (!teamCount?.value || parseInt(teamCount.value, 10) < 2)){
+    showAlert('Bitte Teamgröße (mind. 2) angeben.', 'error');
+    teamCount?.focus();
+    return;
+  }
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Senden...';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Senden...';
 
-      try{
-        const fd = new FormData(form);
-        const res = await fetch('/api/send-request', { method: 'POST', body: fd });
-        const json = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(json?.error || 'Senden fehlgeschlagen.');
-
-        showAlert('Danke! Ihre Anfrage wurde erfolgreich versendet.', 'success');
-        form.reset();
-        syncTeam();
-
-        setTimeout(() => {
-          closeModalById('anfrageModal');
-          clearAlert();
-          setTimeout(() => location.reload(), 120); // Scroll wieder normal
-        }, 1400);
-      } catch (err){
-        showAlert(err.message || 'Es ist ein Fehler aufgetreten.', 'error');
-      } finally{
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Anfrage absenden';
-      }
+  try{
+    const fd = new FormData(form);
+    const res = await fetch('/api/send-request', {
+      method: 'POST',
+      body: fd,
+      headers: { 'Accept': 'application/json' }
     });
+
+    // Robust: JSON versuchen, sonst Text lesen
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+    let payload = null;
+    try {
+      payload = ct.includes('application/json') ? await res.json() : { raw: await res.text() };
+    } catch { payload = { raw: await res.text().catch(()=>'') }; }
+
+    if (!res.ok) {
+      const msg = (payload && payload.error)
+        ? payload.error
+        : (payload && payload.raw)
+          ? (`Fehler ${res.status}: ${payload.raw.slice(0,300)}`) // ein bisschen Rohtext anzeigen
+          : (`Fehler ${res.status} (${res.statusText||'Unbekannt'})`);
+      throw new Error(msg || 'Senden fehlgeschlagen.');
+    }
+
+    showAlert('Danke! Ihre Anfrage wurde erfolgreich versendet.', 'success');
+    form.reset();
+    // Teamfeld zurücksetzen
+    (function syncTeam(){
+      const teamGroup = document.getElementById('teamCountGroup');
+      if (teamGroup) teamGroup.hidden = true;
+      if (teamCount) teamCount.required = false;
+    })();
+
+    // Modal schließen + sauber neu laden (Scroll-Fix)
+    setTimeout(() => {
+      if (typeof closeModalById === 'function') closeModalById('anfrageModal');
+      clearAlert();
+      setTimeout(() => location.reload(), 120);
+    }, 1400);
+
+  } catch (err){
+    console.error('send-request error:', err);
+    showAlert(err.message || 'Senden fehlgeschlagen.', 'error');
+  } finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Anfrage absenden';
+  }
+});
+
   });
   </script>
 </body>

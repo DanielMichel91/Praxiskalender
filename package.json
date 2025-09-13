@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "@sendgrid/mail": "^8.1.0"
+    "@sendgrid/mail": "^8.1.0",
+    "busboy": "^1.6.0"
   }
 }
