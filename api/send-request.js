@@ -106,8 +106,8 @@ export default async function handler(req, res) {
     }
 
     // Dateien sind optional – wenn du „Behandlungen/Logo“ verpflichtend willst: nächste zwei Zeilen einkommentieren
-    // if (!treatments_file_name) missing.push('Behandlungen – Datei');
-    // if (!logo_file_name)       missing.push('Logo – Datei');
+    if (!treatments_file_name) missing.push('Behandlungen – Datei');
+    if (!logo_file_name)       missing.push('Logo – Datei');
 
     if (!b2b) invalid.push('B2B-Bestätigung (§14 BGB)');
 
