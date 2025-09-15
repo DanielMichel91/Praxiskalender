@@ -463,23 +463,49 @@
     </div>
   </div>
 
-  <!-- Datenschutz (Website) Modal -->
-  <div id="datenschutzSiteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzSiteTitle" aria-hidden="true">
-    <div class="modal">
-      <button class="modal-close" data-close="datenschutzSiteModal" aria-label="Schließen">&times;</button>
-      <h2 id="datenschutzSiteTitle">Datenschutzerklärung (Website)</h2>
-      <p><strong>Verantwortlicher</strong><br>Daniel Michel, Asternweg 1, 32339 Espelkamp, E-Mail: <a href="mailto:info@praxis-kalender.com">info@praxis-kalender.com</a></p>
-      <h3>1. Hosting/Server-Protokolle</h3>
-      <p>Beim Aufruf dieser Website werden technisch notwendige Daten (z.&nbsp;B. IP-Adresse, Datum/Uhrzeit, Referrer, User-Agent) in Server-Logs verarbeitet, um die Auslieferung der Seite sicherzustellen und Missbrauch zu verhindern. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren und funktionsfähigen Website). Logs werden vom Hoster nach den dort üblichen Fristen gelöscht.</p>
-      <h3>2. Externe Ressourcen/Cookies</h3>
-      <p>Es werden keine Tracking-Cookies eingesetzt. Web-Schriftarten werden lokal eingebunden; es erfolgt kein Abruf von Google-Fonts-Servern.</p>
-      <h3>3. Kontakt/Anfrageformular</h3>
-      <p>Bei Nutzung des Anfrageformulars verarbeiten wir Ihre Angaben (Anrede, Name, E-Mail, Unternehmer-Bestätigung) zur Bearbeitung Ihrer Anfrage. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Maßnahmen) oder lit. f DSGVO (berechtigtes Interesse an effizienter Kommunikation). Empfänger können Auftragsverarbeiter sein (z.&nbsp;B. Hosting-/Mail-Dienstleister). Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
-      <h3>4. Ihre Rechte</h3>
-      <p>Sie haben Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und Widerspruch. Zudem besteht ein Beschwerderecht bei einer Datenschutz-Aufsichtsbehörde.</p>
-      <p style="color:#6b7280">Stand: 23.08.2025</p>
-    </div>
+<!-- Datenschutz (Website) Modal – aktualisiert -->
+<div id="datenschutzSiteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzSiteTitle" aria-hidden="true">
+  <div class="modal">
+    <button class="modal-close" data-close="datenschutzSiteModal" aria-label="Schließen">&times;</button>
+    <h2 id="datenschutzSiteTitle">Datenschutzerklärung (Website)</h2>
+
+    <p><strong>Verantwortlicher</strong><br>
+      Daniel Michel, Asternweg 1, 32339 Espelkamp<br>
+      E-Mail: <a href="mailto:info@praxis-kalender.com">info@praxis-kalender.com</a>
+    </p>
+
+    <h3>1. Hosting/Server-Protokolle</h3>
+    <p>Beim Aufruf dieser Website werden technisch notwendige Daten (z.&nbsp;B. IP-Adresse, Datum/Uhrzeit, Referrer, User-Agent) in Server-Logs verarbeitet, um die Auslieferung der Seite sicherzustellen und Missbrauch zu verhindern. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren und funktionsfähigen Website). Logs werden vom Hoster nach den dort üblichen Fristen gelöscht.</p>
+
+    <h3>2. Externe Ressourcen/Cookies</h3>
+    <p>Es werden keine Tracking-Cookies eingesetzt. Web-Schriftarten werden lokal eingebunden; es erfolgt kein Abruf von Google-Fonts-Servern.</p>
+
+    <h3>3. Anfrageformular (Vollversion)</h3>
+    <p>Wenn Sie das Anfrageformular verwenden, verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage und zur Vorbereitung eines Vertragsabschlusses.</p>
+    <p><strong>Verarbeitete Daten</strong> (je nach Eingabe):</p>
+    <ul>
+      <li>Anrede, Vorname, Nachname, E-Mail-Adresse</li>
+      <li>Unternehmensname und Anschrift</li>
+      <li>Praxisname (App-Titel)</li>
+      <li>Google-Mailadresse(n) für den exklusiven Zugriff im Play Store</li>
+      <li>Behandler:innen (Name/Kürzel)</li>
+      <li>Nutzeranzahl (1 Person oder Team inkl. Teamgröße)</li>
+      <li>Dateiuploads: Behandlungsliste (CSV/PDF/Excel oder Bild) und Logo (PNG/JPG)</li>
+      <li>B2B-Bestätigung (§ 14 BGB)</li>
+    </ul>
+    <p><strong>Zweck und Rechtsgrundlagen:</strong> Bearbeitung Ihrer Anfrage und Anbahnung eines Vertrags (Art. 6 Abs. 1 lit. b DSGVO) sowie unser berechtigtes Interesse an effizienter Kommunikation und IT-Sicherheit (Art. 6 Abs. 1 lit. f DSGVO).</p>
+    <p><strong>Empfänger/Auftragsverarbeiter:</strong> Hosting/Deployment-Dienstleister (zur Bereitstellung dieser Website) und E-Mail-Dienstleister zum Versand Ihrer Anfrage. Der Versand der Formularinhalte (einschl. Anhängen) erfolgt über <em>Twilio SendGrid</em> als E-Mail-Dienst. Zudem verarbeitet unser E-Mail-Postfach die eingehende Nachricht.</p>
+    <p><strong>Drittlandübermittlung:</strong> Bei Nutzung von SendGrid kann eine Übermittlung in die USA erfolgen. Es werden geeignete Garantien eingesetzt (z.&nbsp;B. EU-Standardvertragsklauseln). Soweit der Empfänger nach dem EU-US Data Privacy Framework zertifiziert ist, stützt sich die Übermittlung ergänzend hierauf.</p>
+    <p><strong>Speicherung/Löschung:</strong> Die Formulardaten werden serverseitig nur vorübergehend zum Versand verarbeitet und nicht dauerhaft auf dem Webserver gespeichert. Die zugestellte E-Mail (inkl. Anhänge) wird im Postfach gespeichert und gelöscht, sobald der Zweck entfällt; regelmäßig spätestens 12&nbsp;Monate nach dem letzten Kontakt, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+    <p><strong>Pflicht zur Bereitstellung:</strong> Einige Angaben sind erforderlich, um Ihre Anfrage bearbeiten zu können; ohne diese ist eine Bearbeitung nicht möglich. Pflichtfelder sind im Formular gekennzeichnet.</p>
+
+    <h3>4. Ihre Rechte</h3>
+    <p>Sie haben Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch gegen Verarbeitungen auf Basis von Art. 6 Abs. 1 lit. f DSGVO. Zudem besteht ein Beschwerderecht bei einer Datenschutz-Aufsichtsbehörde.</p>
+
+    <p style="color:#6b7280">Stand: 15.09.2025</p>
   </div>
+</div>
+
 
   <!-- Datenschutz (Vollversion) Modal -->
   <div id="datenschutzModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="datenschutzTitle" aria-hidden="true">
@@ -494,7 +520,7 @@
       <p><strong>Datensicherheit</strong><br>HTTPS-Transport, Firestore Security Rules, Zugriffskontrolle, TOMs gemäß Art. 32 DSGVO.</p>
       <p><strong>Drittlandübermittlungen</strong><br>Sofern Support/Telemetrie Dienste in Drittländern einbeziehen, werden geeignete Garantien (z.&nbsp;B. EU-US Data Privacy Framework bzw. EU-Standardvertragsklauseln) eingesetzt.</p>
       <p><strong>Löschung</strong><br>Nach Vertragsende auf Wunsch Export/Löschung; automatische Löschung spätestens 30 Tage nach Vertragsende.</p>
-      <p style="color:#6b7280">Stand: 23.08.2025</p>
+      <p style="color:#6b7280">Stand: 15.09.2025</p>
     </div>
   </div>
 
@@ -534,7 +560,7 @@
         <li><strong>Exportdateien:</strong> manuell löschen</li>
         <li><strong>Deinstallation:</strong> entfernt App-Daten (Exportdateien bleiben, bis Sie sie löschen)</li>
       </ul>
-      <p style="color:#6b7280">Stand: 23.08.2025</p>
+      <p style="color:#6b7280">Stand: 15.09.2025</p>
     </div>
   </div>
 
