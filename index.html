@@ -462,10 +462,6 @@
           </div>
         </div>
         <p class="tax-note">Hinweis: Es wird keine Umsatzsteuer berechnet (§ 19 UStG, Kleinunternehmer).</p>
-
-        <div style="margin-top:1.25rem;">
-          <button class="download-btn" data-open="anfrageModal" type="button">Vollversion</button>
-        </div>
       </section>
     </div>
   </main>
@@ -500,30 +496,11 @@
 
     <h3>2. Externe Ressourcen/Cookies</h3>
     <p>Es werden keine Tracking-Cookies eingesetzt. Web-Schriftarten werden lokal eingebunden; es erfolgt kein Abruf von Google-Fonts-Servern.</p>
-
-    <h3>3. Anfrageformular (Vollversion)</h3>
-    <p>Wenn Sie das Anfrageformular verwenden, verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage und zur Vorbereitung eines Vertragsabschlusses.</p>
-    <p><strong>Verarbeitete Daten</strong> (je nach Eingabe):</p>
-    <ul>
-      <li>Anrede, Vorname, Nachname, E-Mail-Adresse</li>
-      <li>Unternehmensname und Anschrift</li>
-      <li>Praxisname (App-Titel)</li>
-      <li>Google-Mailadresse(n) für den exklusiven Zugriff im Play Store</li>
-      <li>Behandler:innen (Name)</li>
-      <li>Nutzeranzahl (1 Person oder Team inkl. Teamgröße)</li>
-      <li>Dateiuploads: Behandlungsliste (CSV/PDF/Excel oder Bild) und Logo (PNG/JPG)</li>
-      <li>B2B-Bestätigung (§ 14 BGB)</li>
-    </ul>
-    <p><strong>Zweck und Rechtsgrundlagen:</strong> Bearbeitung Ihrer Anfrage und Anbahnung eines Vertrags (Art. 6 Abs. 1 lit. b DSGVO) sowie unser berechtigtes Interesse an effizienter Kommunikation und IT-Sicherheit (Art. 6 Abs. 1 lit. f DSGVO).</p>
-    <p><strong>Empfänger/Auftragsverarbeiter:</strong> Hosting/Deployment-Dienstleister (zur Bereitstellung dieser Website) und E-Mail-Dienstleister zum Versand Ihrer Anfrage. Der Versand der Formularinhalte (einschl. Anhängen) erfolgt über <em>Twilio SendGrid</em> als E-Mail-Dienst. Zudem verarbeitet unser E-Mail-Postfach die eingehende Nachricht.</p>
-    <p><strong>Drittlandübermittlung:</strong> Bei Nutzung von SendGrid kann eine Übermittlung in die USA erfolgen. Es werden geeignete Garantien eingesetzt (z.&nbsp;B. EU-Standardvertragsklauseln). Soweit der Empfänger nach dem EU-US Data Privacy Framework zertifiziert ist, stützt sich die Übermittlung ergänzend hierauf.</p>
-    <p><strong>Speicherung/Löschung:</strong> Die Formulardaten werden serverseitig nur vorübergehend zum Versand verarbeitet und nicht dauerhaft auf dem Webserver gespeichert. Die zugestellte E-Mail (inkl. Anhänge) wird im Postfach gespeichert und gelöscht, sobald der Zweck entfällt; regelmäßig spätestens 12&nbsp;Monate nach dem letzten Kontakt, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
-    <p><strong>Pflicht zur Bereitstellung:</strong> Einige Angaben sind erforderlich, um Ihre Anfrage bearbeiten zu können; ohne diese ist eine Bearbeitung nicht möglich. Pflichtfelder sind im Formular gekennzeichnet.</p>
-
-    <h3>4. Ihre Rechte</h3>
+    
+    <h3>3. Ihre Rechte</h3>
     <p>Sie haben Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch gegen Verarbeitungen auf Basis von Art. 6 Abs. 1 lit. f DSGVO. Zudem besteht ein Beschwerderecht bei einer Datenschutz-Aufsichtsbehörde.</p>
 
-    <p style="color:#6b7280">Stand: 05.10.2025</p>
+    <p style="color:#6b7280">Stand: 03.03.2026</p>
   </div>
 </div>
 
@@ -629,148 +606,6 @@
         <li><strong>Deinstallation:</strong> entfernt App-Daten (Exportdateien bleiben, bis Sie sie löschen)</li>
       </ul>
       <p style="color:#6b7280">Stand: 05.10.2025</p>
-    </div>
-  </div>
-
-  <!-- Anfrage-Modal -->
-  <div id="anfrageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="anfrageTitle" aria-hidden="true">
-    <div class="modal">
-      <button class="modal-close" data-close="anfrageModal" aria-label="Schließen">&times;</button>
-      <h2 id="anfrageTitle">Vollversion anfragen</h2>
-
-      <form id="anfrageForm" class="form" novalidate enctype="multipart/form-data">
-        <!-- Honeypot -->
-        <input type="text" name="company" autocomplete="organization" tabindex="-1" aria-hidden="true" class="sr-only">
-
-        <!-- Kontakt -->
-        <div class="field">
-          <label for="anrede">Anrede</label>
-          <div class="radio-group" id="anrede" role="radiogroup" aria-label="Anrede">
-            <label><input type="radio" name="anrede" value="Herr" required> Herr</label>
-            <label><input type="radio" name="anrede" value="Frau" required> Frau</label>
-          </div>
-        </div>
-
-        <div class="form-grid" style="margin-top:1rem;">
-          <div class="field">
-            <label for="vorname">Vorname</label>
-            <input id="vorname" name="vorname" type="text" autocomplete="given-name" required placeholder="Max" maxlength="60">
-          </div>
-          <div class="field">
-            <label for="nachname">Nachname</label>
-            <input id="nachname" name="nachname" type="text" autocomplete="family-name" required placeholder="Mustermann" maxlength="60">
-          </div>
-          <div class="field" style="grid-column:1/-1;">
-            <label for="email">E-Mail</label>
-            <input id="email" name="email" type="email" autocomplete="email" required placeholder="name@beispiel.de" maxlength="120">
-          </div>
-        </div>
-
-        <!-- Unternehmensdaten -->
-        <div class="form-grid" style="margin-top:1rem;">
-          <div class="field" style="grid-column:1/-1;">
-            <label for="company_name">Name des Unternehmens</label>
-            <input id="company_name" name="company_name" type="text" placeholder="Praxis XY / Firma" maxlength="120" autocomplete="organization" required>
-          </div>
-          <div class="field" style="grid-column:1/-1;">
-            <label for="company_address">Anschrift</label>
-            <textarea id="company_address" name="company_address" rows="2" placeholder="Straße Hausnr., PLZ Ort" required></textarea>
-          </div>
-        </div>
-
-        <!-- App-Inhalte -->
-        <div class="form-grid" style="margin-top:1rem;">
-          <div class="field" style="grid-column:1/-1;">
-            <label for="app_title">Praxisname (App-Titel)</label>
-            <input id="app_title" name="app_title" type="text" placeholder="z. B. Praxis Mustermann" maxlength="120" required>
-          </div>
-
-          <!-- Google-Mails -->
-          <div class="field" style="grid-column:1/-1;">
-            <label for="play_emails">Google-Mailadresse/n (exklusiver Zugriff im Play&nbsp;Store)</label>
-            <textarea id="play_emails" name="play_emails" rows="2" placeholder="z. B. praxis@gmail.com&#10;zweiteadresse@gmail.com" required></textarea>
-            <p class="hint">Eine Adresse pro Zeile. Muss ein Google-Konto sein.</p>
-          </div>
-
-          <!-- Behandler:innen -->
-          <div class="field" style="grid-column:1/-1;">
-            <label for="behandlers">Behandler:innen (Name)</label>
-            <textarea id="behandlers" name="behandlers" rows="3" placeholder="Max Mustermann&#10;Eva Beispielfrau" required></textarea>
-            <p class="hint">Eine Person pro Zeile, Format z. B. (Name).</p>
-          </div>
-
-          <!-- Nutzeranzahl (in einer Reihe) -->
-          <div class="field" style="grid-column:1/-1;">
-            <label for="nutzer_typ">Nutzeranzahl</label>
-            <div class="radio-group" id="nutzer_typ" role="radiogroup" aria-label="Nutzeranzahl">
-              <label><input type="radio" name="nutzer_typ" id="nutzer_single" value="single" checked> 1&nbsp;Person</label>
-              <label><input type="radio" name="nutzer_typ" id="nutzer_team" value="team"> Team</label>
-              <div id="teamCountGroup" hidden>
-                <label for="team_count" style="margin:0; font-weight:600;">Anzahl</label>
-                <input id="team_count" name="team_count" type="number" inputmode="numeric" min="2" max="50" placeholder="2">
-              </div>
-            </div>
-            <p class="hint">Bei „Team“ bitte die Gesamtzahl der Nutzenden angeben.</p>
-          </div>
-
-          <!-- Behandlungen – Datei (auch Bild erlaubt) -->
-          <div class="field" style="grid-column:1/-1;">
-            <label for="treatments_file">Behandlungen (Name | Dauer | Preis)</label>
-            <input id="treatments_file" name="treatments_file" type="file" class="sr-only" required
-                   accept=".csv,.pdf,.xls,.xlsx,.png,.jpg,.jpeg,.webp,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/png,image/jpeg,image/webp">
-            <label class="file-drop" for="treatments_file" tabindex="0" id="treatments_drop" aria-describedby="treatments_hint">
-              <span class="file-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v4h16v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-              <div class="file-copy">
-                <span class="file-hint" id="treatments_hint">CSV, PDF, Excel oder Bild (PNG/JPG/WebP)</span>
-                <span class="file-name" id="treatments_file_name" aria-live="polite"></span>
-              </div>
-              <span class="file-cta" aria-hidden="true">Durchsuchen</span>
-            </label>
-          </div>
-
-          <!-- Logo -->
-          <div class="field" style="grid-column:1/-1;">
-            <label for="logo_file">Logo (PNG/JPG)</label>
-            <input id="logo_file" name="logo_file" type="file" class="sr-only" accept="image/png,image/jpeg" required>
-            <label class="file-drop" for="logo_file" tabindex="0" id="logo_drop" aria-describedby="logo_hint">
-              <span class="file-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M3 7h18v10H3zM7 13l3-3 3 3 3-3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-              <div class="file-copy">
-                <span class="file-hint" id="logo_hint">PNG oder JPG</span>
-                <span class="file-name" id="logo_file_name" aria-live="polite"></span>
-              </div>
-              <span class="file-cta" aria-hidden="true">Durchsuchen</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- B2B -->
-        <div class="field" style="margin-top:.5rem;">
-          <label class="checkbox">
-            <input id="b2b" name="b2b" type="checkbox" required>
-            Ich handle als Unternehmer i.S.d. § 14 BGB.
-          </label>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="ghost-btn" data-close="anfrageModal">Abbrechen</button>
-          <button id="submitBtn" type="submit" class="primary-btn">Anfrage absenden</button>
-        </div>
-
-        <div id="formAlert" class="alert" role="status" aria-live="polite" style="display:none;"></div>
-        <p class="hint">
-          Mit Absenden verarbeiten wir Ihre Angaben zur Bearbeitung Ihrer Anfrage
-          (Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO; ggf. lit. f).
-          Weitere Infos: <a href="#" data-open="datenschutzSiteModal">Datenschutz (Website)</a>.
-        </p>
-      </form>
     </div>
   </div>
 
